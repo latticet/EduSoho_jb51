@@ -53,6 +53,7 @@ class AppPackageUpdateController extends BaseController
     public function downloadAndExtractAction(Request $request, $id)
     {
         $errors = $this->getAppService()->downloadPackageForUpdate($id);
+        //$errors =array();
 
         return $this->createResponseWithErrors($errors);
     }

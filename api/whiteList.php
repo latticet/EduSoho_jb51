@@ -2,6 +2,7 @@
 
 return array(
 	'get' => array(
+		'/\/api\/zc888\/\d+/',
 		'/\/api\/users/',
 		'/\/api\/users\//',
 		'/\/api\/users\/pages/',

@@ -42,6 +42,7 @@ function setCurrentUser($user)
 
 function getCurrentUser()
 {
+    
     return ServiceKernel::instance()->getCurrentUser();
 }
 

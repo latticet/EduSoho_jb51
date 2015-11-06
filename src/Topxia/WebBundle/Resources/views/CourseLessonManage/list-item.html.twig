@@ -95,15 +95,15 @@
 
       <ul class="dropdown-menu pull-right dropdown-menu-more" role="menu" style="margin-top:12px;min-width:144px" aria-labelledby="dLabel" style="display:none;">
         
-        {% if is_plugin_installed('Homework') and (lesson.type != 'testpaper') %}
+        {% if  (lesson.type != 'testpaper') %}
           {% set homework =  homeworks[lesson.id]|default(null) %}
           {% set homeworkId =  homework.id|default(null) %}
           {% if homework %}
-            <li><a href="{{ path('course_manage_lesson_homework_edit', {courseId:course.id, lessonId:lesson.id, homeworkId:homeworkId }) }}" ><span class="glyphicon glyphicon-list-alt prs"></span>编辑作业</a></li>
+            <li><a href="" ><span class="glyphicon glyphicon-list-alt prs"></span>编辑作业</a></li>
             <li><a href="{{ path('course_homework_preview', {courseId:course.id,homeworkId:homeworkId }) }}" class="preview-homework-btn" ><span class="glyphicon glyphicon-eye-open prs"></span>预览作业</a></li>
             <li><a href="javascript:;" class="delete-homework-btn" data-url="{{ path('course_manage_lesson_homework_remove', {courseId:course.id, lessonId:lesson.id, homeworkId:homeworkId }) }}" ><span class="glyphicon glyphicon-trash prs"></span>移除作业</a></li>
           {% else %}
-            <li><a href="{{ path('course_manage_lesson_homework_create', {courseId:course.id, lessonId:lesson.id,homeworkId:homeworkId}) }}" ><span class="glyphicon glyphicon-list-alt prs"></span>布置作业</a></li>
+            <li><a href="" ><span class="glyphicon glyphicon-list-alt prs"></span>布置作业</a></li>
           {% endif %}
             <li class="divider"></li>
           {% set lessonId = lesson.id %}
@@ -111,13 +111,13 @@
           {% if exercise %}
             <li><a href="javascript:;" class="delete-exercise-btn" data-url="{{ path('course_exercise_delete', {courseId:course.id, lessonId:lesson.id, id:exercise.id }) }}" ><span class="glyphicon glyphicon-trash prs"></span>移除练习</a></li>
           {% else %}
-            <li><a href="{{ path('course_exercise_create', {courseId:course.id, lessonId:lesson.id}) }}" ><span class="glyphicon glyphicon-list-alt prs"></span>新增练习</a></li>
+            <li><a href="" ><span class="glyphicon glyphicon-list-alt prs"></span>新增练习</a></li>
           {% endif %}
           <li class="divider"></li>
         {% endif %}
 
         {% if lesson.type != 'testpaper' %}
-          <li><a href="javascript:;" data-toggle="modal"  data-target="#modal" data-url="{{ path('course_manage_material', {courseId:course.id, lessonId:lesson.id}) }}"><span class="glyphicon glyphicon-paperclip prs"></span>添加资料</a></li>
+          <li><a href="javascript:;" data-toggle="modal"  data-target="#modal" data-url="{{ path('course_manage_material', {courseId:course.id, lessonId:lesson.id}) }}"><span class="glyphicon glyphicon-paperclip prs"></span>添加-资料</a></li>
           <li class="divider"></li>
         {% endif %}
         

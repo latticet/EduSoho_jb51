@@ -1,11 +1,8 @@
 <?php
-
 use Topxia\Service\Common\ServiceKernel;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
-
 $api = $app['controllers_factory'];
-
 //获取当前用户信息
 /*
 ** 响应 **
@@ -19,9 +16,9 @@ $api = $app['controllers_factory'];
 $api->get('/', function (Request $request) {
     $user = getCurrentUser();
     $user = is_array($user) ? $user : $user->toArray();
+    
     return filter($user, 'me');
 });
-
 //获取当前用户课程
 /*
 [支持分页](global-parameter.md)
@@ -56,55 +53,46 @@ $api->get('/', function (Request $request) {
 */
 $api->get('/courses', function (Request $request) {
     $conditions = $request->query->all();
-    $start = $request->query->get('start',0);
-    $limit = $request->query->get('limit',10);
-    $type = $request->query->get('type','');
-    $relation = $request->query->get('relation','');
+    $start = $request->query->get('start', 0);
+    $limit = $request->query->get('limit', 10);
+    $type = $request->query->get('type', '');
+    $relation = $request->query->get('relation', '');
     $user = getCurrentUser();
-
     if ($relation == 'learning') {
-        $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeaningCourseCount($user['id'],$conditions);
-        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeaningCourses(
-            $user['id'], 
-            $start, 
-            $limit, 
-            empty($type) ? array() : array('type' => $type)
-        );
+        $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeaningCourseCount($user['id'], $conditions);
+        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeaningCourses($user['id'], $start, $limit, empty($type) ? array() : array(
+            'type' => $type
+        ));
     } elseif ($relation == 'learned') {
-        $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeanedCourseCount($user['id'],$conditions);
-        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeanedCourses(
-            $user['id'], 
-            $start, 
-            $limit, 
-            empty($type) ? array() : array('type' => $type)
-        );
+        $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeanedCourseCount($user['id'], $conditions);
+        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeanedCourses($user['id'], $start, $limit, empty($type) ? array() : array(
+            'type' => $type
+        ));
     } elseif ($relation == 'teaching') {
-        $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserTeachCourseCount(array('userId' => $user['id']), false);
-        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserTeachCourses(
-            array('userId' => $user['id']),
-            $start, 
-            $limit, 
-            false
-        );
+        $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserTeachCourseCount(array(
+            'userId' => $user['id']
+        ) , false);
+        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserTeachCourses(array(
+            'userId' => $user['id']
+        ) , $start, $limit, false);
     } else if ($relation == 'favorited') {
         $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserFavoritedCourseCount($user['id']);
-        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserFavoritedCourses(
-            $user['id'],
-            $start, 
-            $limit
-        );
+        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserFavoritedCourses($user['id'], $start, $limit);
     } else {
         //全部
         // $courses = array();
         // $total = 0;
+        $total = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeaningCourseCount($user['id'], $conditions);
+        $courses = ServiceKernel::instance()->createService('Course.CourseService')->findUserLeaningCourses($user['id'], $start, $limit, empty($type) ? array() : array(
+            'type' => $type
+        ));
     }
+    
     return array(
         'data' => $courses,
         'total' => $total
     );
 });
-
-
 //获得当前用户的关注者
 /*
 
@@ -120,9 +108,9 @@ $api->get('/courses', function (Request $request) {
 $api->get('/followers', function (Request $request) {
     $user = getCurrentUser();
     $follwers = ServiceKernel::instance()->createService('User.UserService')->findAllUserFollower($user['id']);
+    
     return $follwers;
 });
-
 //获得当前用户关注的人
 /*
 
@@ -138,10 +126,9 @@ $api->get('/followers', function (Request $request) {
 $api->get('/followings', function (Request $request) {
     $user = getCurrentUser();
     $follwings = ServiceKernel::instance()->createService('User.UserService')->findAllUserFollowing($user['id']);
+    
     return $follwings;
 });
-
-
 //获得当前用户虚拟币账户信息
 $api->get('/accounts', function () {
     $user = getCurrentUser();
@@ -149,9 +136,9 @@ $api->get('/accounts', function () {
     if (empty($accounts)) {
         throw new \Exception('accounts not found');
     }
+    
     return $accounts;
 });
-
 /*
 ## 获取当前用户的话题
     GET /me/coursethreads
@@ -177,13 +164,14 @@ $api->get('/accounts', function () {
 }
 ```
 */
-
 $api->get('/coursethreads', function (Request $request) {
     $user = getCurrentUser();
     $start = $request->query->get('start', 0);
     $limit = $request->query->get('limit', 10);
     $type = $request->query->get('type', '');
-    $conditions = empty($type) ? array() : array('type' => $type);
+    $conditions = empty($type) ? array() : array(
+        'type' => $type
+    );
     $conditions['userId'] = $user['id'];
     $total = ServiceKernel::instance()->createService('Course.ThreadService')->searchThreadCount($conditions);
     $coursethreads = ServiceKernel::instance()->createService('Course.ThreadService')->searchThreads($conditions, 'created', $start, $limit);
@@ -193,7 +181,6 @@ $api->get('/coursethreads', function (Request $request) {
         'total' => $total
     );
 });
-
 /*
 ## 获取当前用户黑名单
     GET /me/blacklists
@@ -217,13 +204,12 @@ $api->get('/coursethreads', function (Request $request) {
 ```
 
 */
-
 $api->get('/blacklists', function () {
     $user = getCurrentUser();
     $blacklists = ServiceKernel::instance()->createService('User.BlacklistService')->findBlacklistsByUserId($user['id']);
+    
     return filters($blacklists, 'blacklist');
 });
-
 /*
 ## 获取当前用户互粉用户
     GET /me/friends
@@ -240,19 +226,18 @@ $api->get('/blacklists', function () {
 ```
 
 */
-
 $api->get('/friends', function (Request $request) {
     $user = getCurrentUser();
     $start = $request->query->get('start', 0);
     $limit = $request->query->get('limit', 10);
     $friends = ServiceKernel::instance()->createService('User.UserService')->findFriends($user['id'], $start, $limit);
     $count = ServiceKernel::instance()->createService('User.UserService')->findFriendCount($user['id']);
+    
     return array(
-        'data' => filters($friends, 'user'),
+        'data' => filters($friends, 'user') ,
         'total' => $count
     );
 });
-
 /*
 ## 获取当前用户通知
     GET /me/notifications
@@ -279,7 +264,6 @@ $api->get('/friends', function (Request $request) {
 ```
 
 */
-
 $api->get('/notifications', function (Request $request) {
     $user = getCurrentUser();
     $start = $request->query->get('start', 0);
@@ -289,15 +273,14 @@ $api->get('/notifications', function (Request $request) {
     if (!empty($type)) {
         $conditions['type'] = $type;
     }
-    $notifications = ServiceKernel::instance()->createService('User.NotificationService')->searchNotifications(
-        $conditions, 
-        array('createdTime','DESC'), 
-        $start, 
-        $limit
-    );
+    $notifications = ServiceKernel::instance()->createService('User.NotificationService')->searchNotifications($conditions, array(
+        'createdTime',
+        'DESC'
+    ) , $start, $limit);
     $count = ServiceKernel::instance()->createService('User.NotificationService')->searchNotificationCount($conditions);
+    
     return array(
-        'data' => filters($notifications, 'notification'),
+        'data' => filters($notifications, 'notification') ,
         'total' => $count
     );
 });

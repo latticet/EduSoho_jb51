@@ -112,6 +112,7 @@ class CourseServiceImpl extends BaseService implements CourseService
 
 	public function searchCourses($conditions, $sort, $start, $limit)
 	{
+		
 		$conditions = $this->_prepareCourseConditions($conditions);
 		if ($sort == 'popular') {
 			$orderBy =  array('hitNum', 'DESC');

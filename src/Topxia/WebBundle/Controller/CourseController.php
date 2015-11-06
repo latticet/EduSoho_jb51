@@ -26,7 +26,7 @@ class CourseController extends CourseBaseController
             $conditions['categoryIds'] = $categoryIds;
         }
         unset($conditions['code']);
-
+        
 		if(!isset($conditions['fliter'])){
 			$conditions['fliter'] =array(
 				'type' => 'all',
@@ -64,6 +64,8 @@ class CourseController extends CourseBaseController
 
 		unset($conditions['fliter']);
 
+		
+
 		$courseSetting = $this->getSettingService()->get('course', array());
 		if (!isset($courseSetting['explore_default_orderBy'])) {
 			$courseSetting['explore_default_orderBy'] = 'latest';
@@ -81,6 +83,7 @@ class CourseController extends CourseBaseController
 			$this->getCourseService()->searchCourseCount($conditions),
 			12
 		);
+
 		$courses = $this->getCourseService()->searchCourses(
 			$conditions, 
 			$orderBy,
