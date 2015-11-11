@@ -95,7 +95,7 @@ $api->get('/{id}', function (Request $request, $id) {
 
 
 
-/*
+/*user
 ## 注册
 
     POST /users/

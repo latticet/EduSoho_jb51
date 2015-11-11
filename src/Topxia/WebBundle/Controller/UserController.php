@@ -70,6 +70,8 @@ class UserController extends BaseController
         $classrooms=array();
 
         $studentClassrooms=$this->getClassroomService()->searchMembers(array('role'=>'student','userId'=>$user['id']),array('createdTime','desc'),0,9999);
+        var_dump($studentClassrooms);
+        die();
         $auditorClassrooms=$this->getClassroomService()->searchMembers(array('role'=>'auditor','userId'=>$user['id']),array('createdTime','desc'),0,9999);
 
         $classrooms=array_merge($studentClassrooms,$auditorClassrooms);

@@ -231,6 +231,7 @@ class SettingsController extends BaseController
 	public function securityAction(Request $request) 
 	{ 
 		$user = $this->getCurrentUser(); 
+
 		if (empty($user['setup'])) {
 			return $this->redirect($this->generateUrl('settings_setup'));
 		}

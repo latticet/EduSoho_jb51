@@ -72,6 +72,8 @@ $app->before(function (Request $request) use ($app) {
     }
     $userService = ServiceKernel::instance()->createService('User.UserService');
     $token = $userService->getToken('mobile_login', $token);
+
+    //伪造一个taken
     $token=array();
     $token['userId']=17;
 $token['token'] ='b2rbxlvo42og48sgo48000gg04wwgso';
@@ -80,6 +82,7 @@ $token['token'] ='b2rbxlvo42og48sgo48000gg04wwgso';
     }
 
     $user = $userService->getUser($token['userId']);
+    $user['currentIp']=$request->getClientIp();
     // $user = $userService->getUser(1);
     if (!$inWhiteList && empty($user)) {
         throw createNotFoundException("Auth user is not found.");

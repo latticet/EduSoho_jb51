@@ -285,4 +285,30 @@ $api->get('/notifications', function (Request $request) {
     );
 });
 
+//修改密码
+$api->post('/change_password', function (Request $request) {
+    $user = getCurrentUser();
+
+$method = $request->request->get('method');
+
+    $current_password = $request->request->get('current_password');
+    $new_password = $request->request->get('new_password');
+    $user_id = $user['id'];
+
+//$user['currentIp']=$current_ip;
+
+    $status = ServiceKernel::instance()->createService('User.UserService')->verifyPassword($user_id, $current_password);
+
+    if($status){
+       $result= ServiceKernel::instance()->createService('User.UserService')->changePassword($user_id, $new_password);
+    }else{
+        
+    }
+
+    return array(
+        'success' => $result
+    );
+    
+});
+
 return $api;
