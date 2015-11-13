@@ -9,6 +9,7 @@ class CourseConvert implements Convert
     public function convert($id)
     {
         $course = ServiceKernel::instance()->createService('Course.CourseService')->getCourse($id);
+        var_dump($id);
         if (empty($course)) {
             throw new \Exception('course not found');
         }

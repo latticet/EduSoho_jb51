@@ -90,6 +90,8 @@ class CourseController extends CourseBaseController
 			$paginator->getOffsetCount(),
 			$paginator->getPerPageCount()
 		);
+		
+
 		$group = $this->getCategoryService()->getGroupByCode('course');
 		if (empty($group)) {
 			$categories = array();
