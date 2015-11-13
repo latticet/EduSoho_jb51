@@ -1,6 +1,3 @@
-helloworld:
-    resource: "@helloworldBundle/Resources/config/routing.yml"
-    prefix:   /
 
 __web:
     resource: "@TopxiaWebBundle/Resources/config/routing.yml"
