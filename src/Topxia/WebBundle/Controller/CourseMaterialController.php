@@ -64,6 +64,7 @@ class CourseMaterialController extends CourseBaseController
         }
 
         $file = $this->getUploadFileService()->getFile($material['fileId']);
+        
         if (empty($file)) {
             throw $this->createNotFoundException();
         }

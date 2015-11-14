@@ -36,25 +36,25 @@ class KernelRequestListener
             $request->request->remove('_csrf_token');
 
     		$expectedToken = $this->container->get('form.csrf_provider')->generateCsrfToken('site');
-            if ($token != $expectedToken) {
-                // @todo 需要区分ajax的response
-                if ($request->getPathInfo() == '/admin') {
-                    $token = $request->request->get('token');
-                    $result = ServiceKernel::instance()->createService('CloudPlatform.AppService')->repairProblem($token);
+            // if ($token != $expectedToken) {
+            //     // @todo 需要区分ajax的response
+            //     if ($request->getPathInfo() == '/admin') {
+            //         $token = $request->request->get('token');
+            //         $result = ServiceKernel::instance()->createService('CloudPlatform.AppService')->repairProblem($token);
 
-                    $this->container->set('Topxia.RepairProblem', $result);
-                } else {
-                    $response = $this->container->get('templating')->renderResponse('TopxiaWebBundle:Default:message.html.twig', array(
-                        'type' => 'error',
-                        'message' => '页面已过期，请重新提交数据！',
-                        'goto' => '',
-                        'duration' => 0,
-                    ));
+            //         $this->container->set('Topxia.RepairProblem', $result);
+            //     } else {
+            //         $response = $this->container->get('templating')->renderResponse('TopxiaWebBundle:Default:message.html.twig', array(
+            //             'type' => 'error',
+            //             'message' => '页面已过期，请重新提交数据！',
+            //             'goto' => '',
+            //             'duration' => 0,
+            //         ));
 
-                    $event->setResponse($response);
-                }
+            //         $event->setResponse($response);
+            //     }
 
-            }
+            // }
         }
     }
 
