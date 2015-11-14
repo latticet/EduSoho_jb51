@@ -1,0 +1,40 @@
+homework_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: HomeworkBundle:Default:index }
+course_homework_check_list:
+    path:     /course/homework/check/{courseId}/{status}/list
+    defaults: { _controller: HomeworkBundle:Default:list }
+
+homework_manage_files:
+    pattern:  /course/{courseId}/homework/manage/files
+    defaults: { _controller: HomeworkBundle:HomeworkFileManage:index }
+homework_file_upload:
+    path:     /course/{courseId}/homework/upload/course/files/{targetType}
+    defaults: { _controller: HomeworkBundle:HomeworkFileManage:uploadCourseFiles }
+homework_manage_picture:
+    pattern:  /course/{courseId}/homework/manage/picture
+    defaults: { _controller: HomeworkBundle:CourseManage:picture }
+
+
+homework_file_upload:
+    pattern:  /homework/file/upload
+    defaults: { _controller: HomeworkBundle:File:upload }
+    methods: [POST]
+
+homework_manage_picture_crop:
+    pattern:  /course/{courseId}/homework/manage/picture/crop
+    defaults: { _controller: HomeworkBundle:CourseManage:pictureCrop }
+
+homework_add:
+    pattern:  /course/{courseId}/lesson/{lessonId}/homework/add
+    defaults: { _controller: HomeworkBundle:Homework:add }
+
+homework_list:
+    pattern:  /lessonplugin/homework/list
+    defaults: { _controller: HomeworkBundle:Homework:list }
+my_teaching_homework_list:
+    pattern:  /my/teaching/homework/list
+    defaults: { _controller: HomeworkBundle:Homework:list }
+my_homework_list:
+    pattern:  /my/homework/list
+    defaults: { _controller: HomeworkBundle:Homework:list }
