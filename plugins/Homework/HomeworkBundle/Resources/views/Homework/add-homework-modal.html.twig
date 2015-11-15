@@ -6,25 +6,11 @@
 {% block body %}
 
 <form id="course-material-form" class="form-horizontal" action="{{ path('homework_add', {courseId:course.id, lessonId:lesson.id}) }}" enctype="multipart/form-data" method="post">
-  <div class="form-group">
-    <div class="col-md-10 col-md-offset-1  controls">
-      
-      {% if not lesson %}
-        <span class="control-text text-warning">暂无资料，请上传。</span>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="col-md-10 col-md-offset-1 controls" id="material-file-chooser">
-      {% include 'HomeworkBundle:Homework:file-chooser.html.twig' %}
-      <input type="hidden" name="fileId">
-    </div>
-  </div>
-
-  <div class="form-group">
+  
+    <div class="form-group">
     <div class="col-md-10 col-md-offset-1 controls">
-      <textarea class="form-control" name="content" rows="2" placeholder="填写资料简介 (可选)"></textarea>
+    <input type="hidden" name="homework_id" value="{{ homework.id }}" />
+      <textarea class="form-control" name="content" rows="2" placeholder="填写作业描述 (必填)">{{ homework.content }}</textarea>
     </div>
   </div>
 
@@ -38,7 +24,7 @@
 
 </form>
 
-<script>app.load('course-manage/material-modal')</script>
+<script>app.load('homework/homework-modal')</script>
 
 {% endblock %}
 

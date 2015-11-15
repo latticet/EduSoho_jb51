@@ -13,13 +13,16 @@ class FileController extends  \Topxia\WebBundle\Controller\BaseController
 
     public function uploadAction(Request $request)
     {
-        list($groupCode, $type) = $this->tryUploadFile($request);
-        
-        if(!$this->isGroup($groupCode)) {
-            return $this->createMessageResponse("error", "参数不正确");
-        }
-        
+        //list($groupCode, $type) = $this->tryUploadFile($request);
+        $groupCode='user'; 
+        $type = 'image';
+        // if(!$this->isGroup($groupCode)) {
+        //     return $this->createMessageResponse("error", "参数不正确");
+        // }
+        //var_dump($_FILES);
         $file = $request->files->get('file');
+        //var_dump($file);
+        //die();
         if ($type == 'image') {
             if (!FileToolkit::isImageFile($file)) {
                 throw new \RuntimeException("您上传的不是图片文件，请重新上传。");
@@ -29,9 +32,12 @@ class FileController extends  \Topxia\WebBundle\Controller\BaseController
         }
 
         $record = $this->getFileService()->uploadFile($groupCode, $file);
-        $record['url'] = $this->get('topxia.twig.web_extension')->getFilePath($record['uri']);
+       
+        //$record['url'] = $this->get('topxia.twig.web_extension')->getFilePath($record['uri']);
 
         $request->getSession()->set("fileId", $record["id"]);
+
+        
         return $this->createJsonResponse($record);
     }
 
@@ -95,9 +101,9 @@ class FileController extends  \Topxia\WebBundle\Controller\BaseController
         $maker = new UploadToken();
         $token = $maker->parse($token);
 
-        if (empty($token)) {
-            throw new \RuntimeException("上传授权码已过期，请刷新页面后重试！");
-        }
+        // if (empty($token)) {
+        //     throw new \RuntimeException("上传授权码已过期，请刷新页面后重试！");
+        // }
 
         $groupCode = $token['group'];
         if(empty($groupCode)){

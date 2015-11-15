@@ -11,5 +11,6 @@ public function findExercisesByLessonIds($lessonIds);
     public function findHomeworkByLessonId($lessonId);
     public function getHomeworkByLessonId($lessonId);
     public function searchResults();
+    public function uploadMaterial($material);
 
 }

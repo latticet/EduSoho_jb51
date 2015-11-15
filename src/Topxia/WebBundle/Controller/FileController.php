@@ -14,12 +14,14 @@ class FileController extends BaseController
     public function uploadAction(Request $request)
     {
         list($groupCode, $type) = $this->tryUploadFile($request);
-        
+
         if(!$this->isGroup($groupCode)) {
+            
             return $this->createMessageResponse("error", "参数不正确");
         }
         
         $file = $request->files->get('file');
+
         if ($type == 'image') {
             if (!FileToolkit::isImageFile($file)) {
                 throw new \RuntimeException("您上传的不是图片文件，请重新上传。");

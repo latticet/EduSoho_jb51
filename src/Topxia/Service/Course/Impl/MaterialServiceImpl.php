@@ -12,6 +12,7 @@ class MaterialServiceImpl extends BaseService implements MaterialService
 	public function uploadMaterial($material)
 	{
 		$argument = $material;
+
 		if (!ArrayToolkit::requireds($material, array('courseId', 'fileId'))) {
 			throw $this->createServiceException('参数缺失，上传失败！');
 		}
@@ -51,6 +52,7 @@ class MaterialServiceImpl extends BaseService implements MaterialService
         }
 
 		$material =  $this->getMaterialDao()->addMaterial($fields);
+		
 		// Increase the linked file usage count, if there's a linked file used by this material.
 		if(!empty($material['fileId'])){
 			$this->getUploadFileService()->waveUploadFile($material['fileId'],'usedCount',1);

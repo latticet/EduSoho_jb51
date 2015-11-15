@@ -38,3 +38,14 @@ my_teaching_homework_list:
 my_homework_list:
     pattern:  /my/homework/list
     defaults: { _controller: HomeworkBundle:Homework:list }
+
+homework_correct:
+    pattern:  /homework/correct
+    defaults: { _controller: HomeworkBundle:Homework:uploadHomeworkFile }
+homework_correct_upload:
+    pattern:  /homework/correct/upload
+    defaults: { _controller: HomeworkBundle:Homework:logoUpload }
+homework_file_upload:
+    pattern:  /homework/file/upload
+    defaults: { _controller: HomeworkBundle:File:upload }
+  
