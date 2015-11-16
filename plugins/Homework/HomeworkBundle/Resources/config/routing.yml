@@ -40,7 +40,7 @@ my_homework_list:
     defaults: { _controller: HomeworkBundle:Homework:list }
 
 homework_correct:
-    pattern:  /homework/correct
+    pattern:  /course/{courseId}/homework/correct
     defaults: { _controller: HomeworkBundle:Homework:uploadHomeworkFile }
 homework_correct_upload:
     pattern:  /homework/correct/upload

@@ -51,7 +51,7 @@
             {{ path('course_manage_course_sync', {id:course.id,type:'lesson'}) }}{% else %}
             {{ path('course_manage_lesson', {id:course.id}) }}
             {% endif %}">
-              <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %} ></span>课时管理
+              <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %} ></span>课时====管理
             </a>
           </li>
           {% if course.type == 'live' %}
@@ -128,7 +128,7 @@
             {{ path('course_manage_course_sync', {id:course.id,type:'testpaper'}) }}{% else %}
             {{ path('course_manage_testpaper', {courseId:course.id}) }}
             {% endif %}">
-              <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %}></span>试卷管理
+              <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %}></span>试卷----管理
             </a>
           </li>
           <li class="list-group-item {% if side_nav == 'testCheck' %}active{% endif %}">

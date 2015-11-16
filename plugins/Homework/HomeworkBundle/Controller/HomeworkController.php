@@ -5,6 +5,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Topxia\Common\ArrayToolkit;
 use Topxia\Common\FileToolkit;
+use Topxia\Common\Paginator;
 
 class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
     public function indexAction($name) {
@@ -66,10 +67,24 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
             'name' => $name
         ));
     }
-    public function uploadHomeworkFileAction(){
+    public function uploadHomeworkFileAction(Request $request, $courseId){
+        $course = $this->getCourseService()->tryManageCourse($courseId);
+        $paginator = new Paginator(
+            $request,
+            100,
+            20
+        );
          $assignBox=array();        
         $assignBox['site']['logo']='/files/system/2015/11-15/112251b78d20251961.jpg';
-        return $this->render('HomeworkBundle:Homework:file-upload-correct-homework.html.twig', $assignBox);
+        $assignBox['type']='';
+        $assignBox['course']=$course;
+        $assignBox['courseLessons']='';
+        $assignBox['users']=$course;
+        $assignBox['paginator']=$paginator;
+        $assignBox['now']=time();
+        $assignBox['storageSetting']='';
+        return $this->render('HomeworkBundle:Homework:homework-list.html.twig', $assignBox);
+
  
     }
         public function logoUploadAction(Request $request)

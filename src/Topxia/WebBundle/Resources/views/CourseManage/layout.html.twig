@@ -51,7 +51,7 @@
             {{ path('course_manage_course_sync', {id:course.id,type:'lesson'}) }}{% else %}
             {{ path('course_manage_lesson', {id:course.id}) }}
             {% endif %}">
-              <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %} ></span>课时管理
+              <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %} ></span>课时------管理
             </a>
           </li>
           {% if course.type == 'live' %}
@@ -68,6 +68,14 @@
             {{ path('course_manage_files', {id:course.id}) }}
             {% endif %}">
               <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %} ></span>文件管理
+            </a>
+          </li>
+          <li class="list-group-item {% if side_nav == 'homework' %}active{% endif %}">
+            <a href="{% if course.locked|default(0) == 1 %}
+            {{ path('course_manage_course_sync', {id:course.id,type:'homework'}) }}{% else %}
+            {{ path('homework_correct', {courseId:course.id}) }}
+            {% endif %}">
+              <span {% if course.locked|default(0) == 1 %}class="es-icon es-icon-lock" aria-hidden="true" {% endif %} ></span>批改作业
             </a>
           </li>
         </ul>
