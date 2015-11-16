@@ -89,4 +89,26 @@ class HomeworkDaoImpl extends BaseDao implements HomeworkDao
         $sql = "SELECT * FROM {$this->table} ORDER BY weight ASC";
         return $this->getConnection()->fetchAll($sql) ? : array();
     }
+    public function searchHomeworks($conditions, $orderBy, $start, $limit)
+    {
+        $this->filterStartLimit($start, $limit);
+        $builder = $this->createDynamicQueryBuilder($conditions)
+            ->from($this->table)
+            ->select('*')
+            ->orderBy($orderBy[0], $orderBy[1])
+            ->setFirstResult($start)
+            ->setMaxResults($limit);       
+        
+        return $builder->execute()->fetchAll() ? : array(); 
+    }
+    public function searchHomeworksCount(array $conditions){
+
+        $builder = $this->createDynamicQueryBuilder($conditions)->from($this->table)
+            
+            ->select('COUNT(id)');
+
+        return $builder->execute()->fetchColumn(0);
+   
+    }
+        
 }

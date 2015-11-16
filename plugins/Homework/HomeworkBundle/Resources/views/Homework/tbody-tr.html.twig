@@ -1,0 +1,21 @@
+{% import "TopxiaWebBundle::macro.html.twig" as web_macro %}
+{% set quality = "" %}
+  
+<tr id="upload-file-tr-0000" data-role="item" data-convertHash="000000">
+{% for homework in homeworks %}
+  <td><input value="{{ homework.id }}" type="checkbox" data-role="batch-item" ></td>
+
+  <td>
+  {{ homework.content }}
+  </td>
+  <td> 
+    不写
+  </td>
+  <td>管你是什么</td>
+  <td> 
+    <span class="text-sm">不知道是什么</span>
+    <br>
+    <span class="text-muted text-sm">时间会给我</span>
+  </td>
+{% endfor %}
+</tr>

@@ -27,4 +27,7 @@ interface HomeworkDao
 
 	public function findCategoriesByIds(array $ids);
 
+	public function searchHomeworks($conditions, $orderBy, $start, $limit);
+	public function searchHomeworksCount(array $conditions);
+
 }

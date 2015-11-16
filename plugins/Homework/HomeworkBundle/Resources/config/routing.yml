@@ -3,11 +3,9 @@ homework_homepage:
     defaults: { _controller: HomeworkBundle:Default:index }
 course_homework_check_list:
     path:     /course/homework/check/{courseId}/{status}/list
-    defaults: { _controller: HomeworkBundle:Default:list }
+    defaults: { _controller: HomeworkBundle:Homework:index }
 
-homework_manage_files:
-    pattern:  /course/{courseId}/homework/manage/files
-    defaults: { _controller: HomeworkBundle:HomeworkFileManage:index }
+
 homework_file_upload:
     path:     /course/{courseId}/homework/upload/course/files/{targetType}
     defaults: { _controller: HomeworkBundle:HomeworkFileManage:uploadCourseFiles }

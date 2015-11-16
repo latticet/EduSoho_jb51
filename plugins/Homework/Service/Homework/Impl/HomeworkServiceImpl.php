@@ -66,7 +66,7 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
             throw $this->createServiceException('参数不正确，更新作业失败！');
         }
         $this->_filterHomeworkFields($fields);
-        $fields['update_at']=$_SERVER['REQUEST_TIME']; 
+        $fields['update_at'] = $_SERVER['REQUEST_TIME'];
         $this->getLogService()->info('Homework', 'update', "编辑作业 {$fields['content']}(#{$id})", $fields);
         
         return $this->getHomeworkDao()->updateHomework($id, $fields);
@@ -92,41 +92,45 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
         
         return $this->createService('System.LogService');
     }
-    public function searchHomeworks(array $conditions, $sort, $start, $limit) {
-    }
-    public function findHomeworkByLessonId($lessonId){
-$homework = $this->getHomeworkDao()->findHomeworkByLessonId($lessonId);
 
-return $homework;
-
+    public function searchHomeworks(array $conditions, $orderBy, $start, $limit) {
+        return $this->getHomeworkDao()->searchHomeworks($conditions, $orderBy, $start, $limit);
     }
-    public function seachHomeworks(array $conditions, $sort, $start, $limit){}
-    public function getHomeworkByLessonId($lessonId){
+    public function searchHomeworksCount(array $conditions){
+
+        return $this->getHomeworkDao()->searchHomeworksCount($conditions);
+    }
+    public function findHomeworkByLessonId($lessonId) {
+        $homework = $this->getHomeworkDao()->findHomeworkByLessonId($lessonId);
         
+        return $homework;
     }
-        public function searchResults(){
-            return array();
-        }
-    public function uploadMaterial($material)
-    {
+    
+    public function getHomeworkByLessonId($lessonId) {
+    }
+    public function searchResults() {
+        
+        return array();
+    }
+    public function uploadMaterial($material) {
         $argument = $material;
-        if (!ArrayToolkit::requireds($material, array('courseId', 'fileId'))) {
+        if (!ArrayToolkit::requireds($material, array(
+            'courseId',
+            'fileId'
+        ))) {
             throw $this->createServiceException('参数缺失，上传失败！');
         }
-
         $course = $this->getCourseService()->getCourse($material['courseId']);
         if (empty($course)) {
             throw $this->createServiceException('课程不存在，上传资料失败！');
         }
-
         $fields = array(
             'courseId' => $material['courseId'],
             'lessonId' => empty($material['lessonId']) ? 0 : $material['lessonId'],
-            'description'  => empty($material['description']) ? '' : $material['description'],
+            'description' => empty($material['description']) ? '' : $material['description'],
             'userId' => $this->getCurrentUser()->id,
-            'createdTime' => time(),
+            'createdTime' => time() ,
         );
-
         if (empty($material['fileId'])) {
             if (empty($material['link'])) {
                 throw $this->createServiceException('资料链接地址不能为空，添加资料失败！');
@@ -135,7 +139,7 @@ return $homework;
             $fields['link'] = $material['link'];
             $fields['title'] = empty($material['description']) ? $material['link'] : $material['description'];
         } else {
-            $fields['fileId'] = (int) $material['fileId'];
+            $fields['fileId'] = (int)$material['fileId'];
             $file = $this->getUploadFileService()->getFile($material['fileId']);
             if (empty($file)) {
                 throw $this->createServiceException('文件不存在，上传资料失败！');
@@ -144,20 +148,20 @@ return $homework;
             $fields['title'] = $file['filename'];
             $fields['fileSize'] = $file['size'];
         }
-        if(array_key_exists('copyId', $material)){
+        if (array_key_exists('copyId', $material)) {
             $fields['copyId'] = $material['copyId'];
         }
-
-        $material =  $this->getMaterialDao()->addMaterial($fields);
+        $material = $this->getMaterialDao()->addMaterial($fields);
         // Increase the linked file usage count, if there's a linked file used by this material.
-        if(!empty($material['fileId'])){
-            $this->getUploadFileService()->waveUploadFile($material['fileId'],'usedCount',1);
+        if (!empty($material['fileId'])) {
+            $this->getUploadFileService()->waveUploadFile($material['fileId'], 'usedCount', 1);
         }
-
         $this->getCourseService()->increaseLessonMaterialCount($fields['lessonId']);
-
-        $this->dispatchEvent("material.create",array('argument'=>$argument,'material'=>$material));
-
+        $this->dispatchEvent("material.create", array(
+            'argument' => $argument,
+            'material' => $material
+        ));
+        
         return $material;
     }
 }
