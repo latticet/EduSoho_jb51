@@ -98,7 +98,7 @@ class CourseOrderController extends OrderController
         if (empty($user)) {
             return $this->createMessageResponse('error', '用户未登录，不能购买。');
         }
-
+        
         $course = $this->getCourseService()->getCourse($formData['targetId']);
         if (empty($course)) {
             return $this->createMessageResponse('error', '课程不存在，不能购买。');

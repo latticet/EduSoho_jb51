@@ -14,10 +14,7 @@ homework_manage_picture:
     defaults: { _controller: HomeworkBundle:CourseManage:picture }
 
 
-homework_file_upload:
-    pattern:  /homework/file/upload
-    defaults: { _controller: HomeworkBundle:File:upload }
-    methods: [POST]
+
 
 homework_manage_picture_crop:
     pattern:  /course/{courseId}/homework/manage/picture/crop
@@ -27,16 +24,14 @@ homework_add:
     pattern:  /course/{courseId}/lesson/{lessonId}/homework/add
     defaults: { _controller: HomeworkBundle:Homework:add }
 
-homework_list:
-    pattern:  /lessonplugin/homework/list
-    defaults: { _controller: HomeworkBundle:Homework:list }
+
 my_teaching_homework_list:
     pattern:  /my/teaching/homework/list
     defaults: { _controller: HomeworkBundle:Homework:list }
 my_homework_list:
     pattern:  /my/homework/list
     defaults: { _controller: HomeworkBundle:Homework:list }
-
+# 修改作业
 homework_correct:
     pattern:  /course/{courseId}/homework/correct
     defaults: { _controller: HomeworkBundle:Homework:uploadHomeworkFile }
@@ -47,3 +42,11 @@ homework_file_upload:
     pattern:  /homework/file/upload
     defaults: { _controller: HomeworkBundle:File:upload }
   
+# 右侧工具条 作业
+lessonplugin_homework_list:
+    pattern:  /lessonplugin/homework/list
+    defaults: { _controller: HomeworkBundle:Homework:listPlugin }
+# 做作业
+homework_do:
+    pattern:  /course/{courseId}/lesson/{lessonId}/homework/do
+    defaults: { _controller: HomeworkBundle:Homework:do }

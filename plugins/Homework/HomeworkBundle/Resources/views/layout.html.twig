@@ -6,6 +6,7 @@
 {% set menu = menu|default(null) %}
 {% set menu_breadcrumb = menu_breadcrumb('admin', menu) %}
 {% set menu_current = menu_breadcrumb|last %}
+
 {% set menu_nav = menu_breadcrumb[0]|default(null) %}
 {% set menu_sidebar = menu_breadcrumb[1]|default(null) %}
 {% set menu_main = menu_breadcrumb[2]|default(null) %}

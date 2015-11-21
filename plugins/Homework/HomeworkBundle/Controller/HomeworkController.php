@@ -6,51 +6,66 @@ use Symfony\Component\HttpFoundation\Response;
 use Topxia\Common\ArrayToolkit;
 use Topxia\Common\FileToolkit;
 use Topxia\Common\Paginator;
+use Topxia\Service\Common\ServiceKernel;
 
 class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
     public function indexAction(Request $request, $courseId) {
-        $course = $this->getCourseService()->tryManageCourse($courseId);
-        $homeworks=array();
+        $course = $this->getCourseService()->getCourse($courseId);
+        $homeworks = array();
         $homeworkService = $this->getHomeworkService();
         $conditions = array();
         $conditions['course_id'] = $course['id'];
-        $orderBy=array();
-        $orderBy[]='create_at';
-        $orderBy[]='DESC';
-$count = $homeworkService->searchHomeworksCount($conditions);
-        $page_size =20;
+        $orderBy = array();
+        $orderBy[] = 'create_at';
+        $orderBy[] = 'DESC';
+        $count = $homeworkService->searchHomeworksCount($conditions);
+        $page_size = 20;
         $paginator = new Paginator($request, $count, $page_size);
-        
-        $start =$paginator->getOffsetCount();
-        $limit =$paginator->getPerPageCount();
-
-         $homeworks = $homeworkService->searchHomeworks($conditions,$orderBy,$start,$limit);   
-        
+        $start = $paginator->getOffsetCount();
+        $limit = $paginator->getPerPageCount();
+        $homeworks = $homeworkService->searchHomeworks($conditions, $orderBy, $start, $limit);
         $storageSetting = $this->getSettingService()->get("storage");
-
         $tpl = 'HomeworkBundle:Homework:index.html.twig';
         $assignBox = array();
         $assignBox['course'] = $course;
         $assignBox['homeworks'] = $homeworks;
-        
         $assignBox['paginator'] = $paginator;
         $assignBox['now'] = $_SERVER['REQUEST_TIME'];
         $assignBox['storageSetting'] = $storageSetting;
         
         return $this->render($tpl, $assignBox);
     }
-    public function listAction(Request $request) {
+    /**
+     * 工具栏左侧作业列表
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function listPluginAction(Request $request) {
         $homeworkService = $this->getHomeworkService();
-        $lessonId = $request->query->get('lessonId');
+        $lessonId = $request->query->get('lessonId', 0);
+        $courseId = $request->query->get('courseId', 0);
+        $course = ServiceKernel::instance()->createService('Course.CourseService')->getCourse($courseId);
+        $lesson = ServiceKernel::instance()->createService('Course.CourseService')->getCourseLesson($courseId, $lessonId);
+        $homeworks = array();
         $homework = $homeworkService->findHomeworkByLessonId($lessonId);
-        $name = $homework['content'];
+        if (!empty($homework)) {
+            $homeworks[] = $homework;
+        }
+        $tpl = 'HomeworkBundle:Homework:plugin-list.html.twig';
+        $assignBox = array();
+        $assignBox['homeworks'] = $homeworks;
+        $assignBox['course'] = $course;
+        $assignBox['lesson'] = $lesson;
+        // $assignBox['course'] = $course;
+        // $assignBox['homeworks'] = $homeworks;
+        // $assignBox['paginator'] = $paginator;
+        // $assignBox['now'] = $_SERVER['REQUEST_TIME'];
+        // $assignBox['storageSetting'] = $storageSetting;
         
-        return $this->render('HomeworkBundle:Default:index.html.twig', array(
-            'name' => $name
-        ));
+        return $this->render($tpl, $assignBox);
     }
     public function addAction(Request $request, $courseId, $lessonId) {
-        $course = $this->getCourseService()->tryManageCourse($courseId);
+        $course = $this->getCourseService()->getCourse($courseId);
         $lesson = $this->getCourseService()->getCourseLesson($courseId, $lessonId);
         $homeworkService = $this->getHomeworkService();
         if ($request->getMethod() == 'POST') {
@@ -84,6 +99,42 @@ $count = $homeworkService->searchHomeworksCount($conditions);
         
         return $this->render('HomeworkBundle:Homework:add-homework-modal.html.twig', $assignBox);
     }
+    public function doAction(Request $request, $courseId, $lessonId) {
+        $course = $this->getCourseService()->getCourse($courseId);
+        $lesson = $this->getCourseService()->getCourseLesson($courseId, $lessonId);
+        $homeworkService = $this->getHomeworkService();
+        if ($request->getMethod() == 'POST') {
+            $detail = $request->request->all();
+            if (isset($detail['homework_id']) && $detail['homework_id'] > 0) {
+                $homework_id = $detail['homework_id'];
+                $data = array();
+                $data['content'] = $detail['content'];
+                $homework = $homeworkService->updateHomework($homework_id, $data);
+            } else {
+                unset($detail['homework_id']);
+                $detail['course_id'] = $courseId;
+                $detail['lesson_id'] = $lessonId;
+                $homework = $homeworkService->createHomework($detail);
+            }
+        } else {
+            $homework = $homeworkService->findHomeworkByLessonId($lessonId);
+        }
+        if (empty($homework)) {
+            $homework = array();
+            $homework['id'] = 0;
+            $homework['content'] = '';
+        }
+        $tpl = 'HomeworkBundle:Homework:do-homework.html.twig';
+        $assignBox = array();
+        $assignBox['homework'] = $homework;
+        $assignBox['course'] = $course;
+        $assignBox['lesson'] = $lesson;
+        $assignBox['targetType'] = 'homeworkPic';
+        $assignBox['targetId'] = $course['id'];
+        $assignBox['storageSetting'] = $this->setting('storage');
+        
+        return $this->render($tpl, $assignBox);
+    }
     public function isHomeworkExists() {
     }
     public function saveAction(Request $request) {
@@ -93,7 +144,7 @@ $count = $homeworkService->searchHomeworksCount($conditions);
         ));
     }
     public function uploadHomeworkFileAction(Request $request, $courseId) {
-        $course = $this->getCourseService()->tryManageCourse($courseId);
+        $course = $this->getCourseService()->getCourse($courseId);
         $paginator = new Paginator($request, 100, 20);
         $assignBox = array();
         $assignBox['site']['logo'] = '/files/system/2015/11-15/112251b78d20251961.jpg';
