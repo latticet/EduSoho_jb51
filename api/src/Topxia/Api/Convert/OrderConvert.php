@@ -14,7 +14,7 @@ class OrderConvert implements Convert
     //根据id等参数获取完整数据
     public function convert($id)
     {
-        $order = ServiceKernel::instance()->createService('order.orderService')->getorder($id);
+        $order = ServiceKernel::instance()->createService('Order.OrderService')->getorder($id);
         if (empty($order)) {
             throw new \Exception('user not found');
         }
