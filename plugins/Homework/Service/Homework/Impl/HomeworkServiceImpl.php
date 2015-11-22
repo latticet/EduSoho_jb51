@@ -34,11 +34,7 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
         return $this->getHomeworkDao()->findAllHomeworks();
     }
     public function createHomework(array $Homework) {
-        $Homework = ArrayToolkit::parts($Homework, array(
-            'content',
-            'course_id',
-            'lesson_id'
-        ));
+        
         if (!ArrayToolkit::requireds($Homework, array(
             'content',
             'course_id',
@@ -48,6 +44,7 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
         }
         $this->_filterHomeworkFields($Homework);
         $Homework['create_at'] = time();
+        $Homework['update_at'] = $Homework['create_at'];
         $Homework = $this->getHomeworkDao()->addHomework($Homework);
         $this->getLogService()->info('Homework', 'create', "添加作业 {$Homework['content']}(#{$Homework['id']})", $Homework);
         

@@ -38,6 +38,8 @@ homework_correct:
 homework_correct_upload:
     pattern:  /homework/correct/upload
     defaults: { _controller: HomeworkBundle:Homework:logoUpload }
+    
+# 作业上传
 homework_file_upload:
     pattern:  /homework/file/upload
     defaults: { _controller: HomeworkBundle:File:upload }

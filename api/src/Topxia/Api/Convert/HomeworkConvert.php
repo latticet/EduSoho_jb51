@@ -14,7 +14,7 @@ class HomeworkConvert implements Convert
     //根据id等参数获取完整数据
     public function convert($id)
     {
-        $homework = ServiceKernel::instance()->createService('homework.homeworkService')->gethomework($id);
+        $homework = ServiceKernel::instance()->createService('Homework:Homework.HomeworkService')->gethomework($id);
         if (empty($homework)) {
             throw new \Exception('user not found');
         }
