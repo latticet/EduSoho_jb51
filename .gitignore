@@ -5,7 +5,7 @@ package.json
 **/release/
 **/release/*
 /.idea
-/web/bundles/
+
 /app/cache/*
 /app/config/parameters.yml
 /app/config/menu_blacklist.yml
