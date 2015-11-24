@@ -10,11 +10,9 @@ use Topxia\Service\Common\ServiceKernel;
 
 class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
     public function indexAction(Request $request, $courseId) {
-
         $course = $this->getCourseService()->getCourse($courseId);
-        $lessons=$this->getCourseService()->getCourseLessons($courseId);
-        $lessons=ArrayToolkit::index($lessons,'homeworkId');
-        
+        $lessons = $this->getCourseService()->getCourseLessons($courseId);
+        $lessons = ArrayToolkit::index($lessons, 'homeworkId');
         $homeworks = array();
         $homeworkService = $this->getHomeworkService();
         $conditions = array();
@@ -28,8 +26,7 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         $start = $paginator->getOffsetCount();
         $limit = $paginator->getPerPageCount();
         $homeworks = $homeworkService->searchHomeworks($conditions, $orderBy, $start, $limit);
-        $homeworks= $this->addLessonName($homeworks,$lessons);
-
+        $homeworks = $this->addLessonName($homeworks, $lessons);
         $storageSetting = $this->getSettingService()->get("storage");
         $tpl = 'HomeworkBundle:Homework:index.html.twig';
         $assignBox = array();
@@ -39,12 +36,12 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         $assignBox['now'] = $_SERVER['REQUEST_TIME'];
         $assignBox['storageSetting'] = $storageSetting;
         
-        
         return $this->render($tpl, $assignBox);
     }
-    public function getLessonNames(){}
+    public function getLessonNames() {
+    }
     /**
-     * 工具栏左侧作业列表
+     * 工具栏右侧作业列表
      * @param  Request $request [description]
      * @return [type]           [description]
      */
@@ -64,7 +61,36 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         $assignBox['homeworks'] = $homeworks;
         $assignBox['course'] = $course;
         $assignBox['lesson'] = $lesson;
-       
+        
+        return $this->render($tpl, $assignBox);
+    }
+    public function lessonHomeworkListAction(Request $request, $courseId, $lessonId) {
+        $course = ServiceKernel::instance()->createService('Course.CourseService')->getCourse($courseId);
+        $lesson = ServiceKernel::instance()->createService('Course.CourseService')->getCourseLesson($courseId, $lessonId);
+        $homeworkService = $this->getHomeworkService();
+        $homework = $homeworkService->findHomeworkByLessonId($lessonId);
+        $homeworkMemberService = $this->getHomeworkMemberService();
+        $homework_members = $homeworkMemberService->findHomeworkMembersByLessonId($lessonId);
+        $conditions = array();
+        $conditions['lesson_id'] = $lesson['id'];
+        $orderBy = array();
+        $orderBy[] = 'create_at';
+        $orderBy[] = 'DESC';
+        $count = $homeworkMemberService->searchHomeworkMembersCount($conditions);
+        $page_size = 20;
+        $paginator = new Paginator($request, $count, $page_size);
+        $start = $paginator->getOffsetCount();
+        $limit = $paginator->getPerPageCount();
+        $homework_members = $homeworkMemberService->searchHomeworkMembers($conditions, $orderBy, $start, $limit);
+        $homework_members = $this->addUser($homework_members);
+        $tpl = 'HomeworkBundle:Homework:lesson-homework-list.html.twig';
+        $assignBox = array();
+        $assignBox['course'] = $course;
+        $assignBox['lesson'] = $lesson;
+        $assignBox['homework'] = $homework;
+        $assignBox['homework_members'] = $homework_members;
+        $assignBox['paginator'] = $paginator;
+        
         return $this->render($tpl, $assignBox);
     }
     public function addAction(Request $request, $courseId, $lessonId) {
@@ -72,29 +98,26 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         $lesson = $this->getCourseService()->getCourseLesson($courseId, $lessonId);
         $homeworkService = $this->getHomeworkService();
         $user = $this->getCurrentUser();
-
         if ($request->getMethod() == 'POST') {
             $detail = $request->request->all();
             if (isset($detail['homework_id']) && $detail['homework_id'] > 0) {
                 $homework_id = $detail['homework_id'];
                 $data = array();
-                $data['title']=$detail['content'];
+                $data['title'] = $detail['content'];
                 $data['content'] = $detail['content'];
                 $homework = $homeworkService->updateHomework($homework_id, $data);
             } else {
                 unset($detail['homework_id']);
                 $detail['course_id'] = $courseId;
                 $detail['lesson_id'] = $lessonId;
-                $detail['user_id']=$user['id'];
-                $detail['title']=$detail['content'];
+                $detail['user_id'] = $user['id'];
+                $detail['title'] = $detail['content'];
                 $homework = $homeworkService->createHomework($detail);
                 //更新homeworkId 作业绑定章节
-                $fields=array();
-                $fields['homeworkId']=$homework['id'];
+                $fields = array();
+                $fields['homeworkId'] = $homework['id'];
                 $this->getCourseService()->updateLesson($courseId, $lessonId, $fields);
-                
             }
-
         } else {
             $homework = $homeworkService->findHomeworkByLessonId($lessonId);
         }
@@ -103,7 +126,7 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
             $homework['id'] = 0;
             $homework['content'] = '';
         }
-        $tpl='HomeworkBundle:Homework:add-homework-modal.html.twig';
+        $tpl = 'HomeworkBundle:Homework:add-homework-modal.html.twig';
         $assignBox = array();
         $assignBox['homework'] = $homework;
         $assignBox['course'] = $course;
@@ -116,13 +139,11 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
     }
     public function doAction(Request $request, $courseId, $lessonId) {
         $user = $this->getCurrentUser();
-        $userService=$this->getUserService();
-        $member_type='';
-
-        
+        $userService = $this->getUserService();
+        $member_type = '';
         $course = $this->getCourseService()->getCourse($courseId);
         $lesson = $this->getCourseService()->getCourseLesson($courseId, $lessonId);
-                $homeworkService = $this->getHomeworkService();
+        $homeworkService = $this->getHomeworkService();
         if ($request->getMethod() == 'POST') {
             $detail = $request->request->all();
             if (isset($detail['homework_id']) && $detail['homework_id'] > 0) {
@@ -139,36 +160,32 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         } else {
             $homework = $homeworkService->findHomeworkByLessonId($lessonId);
         }
-        $is_teacher=false;
-        $is_teacher= in_array('ROLE_TEACHER',$user['roles']);
-$homework_member=array();
-        if($is_teacher){
-            $member_type='teacher';
+        $is_teacher = false;
+        $is_teacher = in_array('ROLE_TEACHER', $user['roles']);
+        $homework_member = array();
+        if ($is_teacher) {
+            $member_type = 'teacher';
             $studentId = $request->query->get('studentId');
             $teacherId = $user['id'];
-            $student_info = $userService ->getUser($studentId);
-            $teacher_info = $user;            
-        }else{
-    
-            $member_type='student';
+            $student_info = $userService->getUser($studentId);
+            $teacher_info = $user;
+        } else {
+            $member_type = 'student';
             $studentId = $user['id'];
-            $teacherId = $homework['user_id']; 
+            $teacherId = $homework['user_id'];
             $student_info = $user;
-            $teacher_info = $userService->getUser($teacherId); 
+            $teacher_info = $userService->getUser($teacherId);
         }
-        
-        
-         $homeworkMemberService =$this->getHomeworkMemberService();
-            $homework_student = $homeworkMemberService->findStudentHomeworkByUserId($studentId,$lesson['homeworkId']);
-$homework_student['pic_path']=$this->picParse($homework_student['pic']);
-if(!isset($homework_student['remark'])){
-$homework_student['remark']='';
-}
-$homework_teacher = $homeworkMemberService->findTeacherHomeworkByUserId($teacherId,$lesson['homeworkId']);
-$homework_teacher['pic_path']=$this->picParse($homework_teacher['pic']);
-$homework_member['student']=$homework_student;
-$homework_member['teacher']=$homework_teacher;
-
+        $homeworkMemberService = $this->getHomeworkMemberService();
+        $homework_student = $homeworkMemberService->findStudentHomeworkByUserId($studentId, $lesson['homeworkId']);
+        $homework_student['pic_path'] = $this->picParse($homework_student['pic']);
+        if (!isset($homework_student['remark'])) {
+            $homework_student['remark'] = '';
+        }
+        $homework_teacher = $homeworkMemberService->findTeacherHomeworkByUserId($teacherId, $lesson['homeworkId']);
+        $homework_teacher['pic_path'] = $this->picParse($homework_teacher['pic']);
+        $homework_member['student'] = $homework_student;
+        $homework_member['teacher'] = $homework_teacher;
         if (empty($homework)) {
             $homework = array();
             $homework['id'] = 0;
@@ -182,8 +199,9 @@ $homework_member['teacher']=$homework_teacher;
         $assignBox['targetType'] = 'homeworkPic';
         $assignBox['targetId'] = $course['id'];
         $assignBox['storageSetting'] = $this->setting('storage');
-        $assignBox['homework_member']=$homework_member;
-        $assignBox['member_type']=$member_type;
+        $assignBox['homework_member'] = $homework_member;
+        $assignBox['member_type'] = $member_type;
+        
         return $this->render($tpl, $assignBox);
     }
     public function isHomeworkExists() {
@@ -232,6 +250,10 @@ $homework_member['teacher']=$homework_teacher;
         
         return $this->getServiceKernel()->createService('Homework:Homework.HomeworkMemberService');
     }
+    protected function getHomeworkTeacherService() {
+        
+        return $this->getServiceKernel()->createService('Homework:Homework.HomeworkTeacherService');
+    }
     protected function getCourseService() {
         
         return $this->getServiceKernel()->createService('Course.CourseService');
@@ -248,32 +270,48 @@ $homework_member['teacher']=$homework_teacher;
         
         return $this->getServiceKernel()->createService('System.SettingService');
     }
-
-    protected function addLessonName($homeworks,$lessons){
-        if(!empty($homeworks)){
+    protected function addLessonName($homeworks, $lessons) {
+        if (!empty($homeworks)) {
+            
             foreach ($homeworks as $key => $homework) {
-                $homeworks[$key]['lesson_name']=$lessons[$homework['id']]['title'];
+                if (isset($lessons[$homework['id']])) {
+                    $homeworks[$key]['lesson_name'] = $lessons[$homework['id']]['title'];
+                    $homeworks[$key]['lesson_id'] = $lessons[$homework['id']]['id'];
+                } else {
+                    $homeworks[$key]['lesson_name'] = '';
+                    $homeworks[$key]['lesson_id'] = '';
+                }
             }
         }
+        
         return $homeworks;
     }
-    protected function picParse($pic){
-        $url='';
-        if(!empty($pic)){
-            $public_mark='public:/';
-            $public_path='/files';
-            $private_mark='private:/';
-            $private_path='/app/data/private_files';
-            if(strpos($pic, $public_mark)!==false){
-                $url = str_replace($public_mark, $public_path, $pic);
-
-            }elseif (strpos($pic, $private_mark)!==false) {
-               $url = str_replace($private_mark, $private_path, $pic);
+    protected function addUser($arr) {
+        if (!empty($arr)) {
+            
+            foreach ($arr as $key => $value) {
+                if (isset($value['user_id'])) {
+                    $arr[$key]['user_info'] = $this->getUserService()->getUser($value['user_id']);
+                }
             }
-
-
-
         }
+        
+        return $arr;
+    }
+    protected function picParse($pic) {
+        $url = '';
+        if (!empty($pic)) {
+            $public_mark = 'public:/';
+            $public_path = '/files';
+            $private_mark = 'private:/';
+            $private_path = '/app/data/private_files';
+            if (strpos($pic, $public_mark) !== false) {
+                $url = str_replace($public_mark, $public_path, $pic);
+            } elseif (strpos($pic, $private_mark) !== false) {
+                $url = str_replace($private_mark, $private_path, $pic);
+            }
+        }
+        
         return $url;
     }
 }

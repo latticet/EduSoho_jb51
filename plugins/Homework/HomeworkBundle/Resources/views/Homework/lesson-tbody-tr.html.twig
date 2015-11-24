@@ -7,13 +7,14 @@
   <td><input value="{{ homework.id }}" type="checkbox" data-role="batch-item" ></td>
 
   <td>
-  {{ course.title }}
+  {{ lesson.title }}
 
   </td>
-  <td> 
-    <a href="{{ path('lesson_homwork_list', {courseId:course.id, lessonId:homework.lesson_id}) }}">{{ homework.lesson_name }}</a>
-  </td>
+  
   <td>{{ homework.title }}</td>
+  <td> 
+    <a href="{{ path('homework_teacher_correct', {courseId:course.id, lessonId:homework.lesson_id,homeworMemberId:homework_member.id,userId:homework_member.user_id}) }}">{{ homework_member.user_info.nickname }}</a>
+  </td>
   <td> 
     <span class="text-sm">{{ homework.update_at|date('Y-n-d H:i') }}</span>
     

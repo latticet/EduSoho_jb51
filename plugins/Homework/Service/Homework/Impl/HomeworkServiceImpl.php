@@ -34,7 +34,6 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
         return $this->getHomeworkDao()->findAllHomeworks();
     }
     public function createHomework(array $Homework) {
-        
         if (!ArrayToolkit::requireds($Homework, array(
             'content',
             'course_id',
@@ -89,12 +88,12 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
         
         return $this->createService('System.LogService');
     }
-
     public function searchHomeworks(array $conditions, $orderBy, $start, $limit) {
+        
         return $this->getHomeworkDao()->searchHomeworks($conditions, $orderBy, $start, $limit);
     }
-    public function searchHomeworksCount(array $conditions){
-
+    public function searchHomeworksCount(array $conditions) {
+        
         return $this->getHomeworkDao()->searchHomeworksCount($conditions);
     }
     public function findHomeworkByLessonId($lessonId) {
@@ -102,7 +101,6 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
         
         return $homework;
     }
-    
     public function getHomeworkByLessonId($lessonId) {
     }
     public function searchResults() {

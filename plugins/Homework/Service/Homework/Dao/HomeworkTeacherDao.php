@@ -8,12 +8,12 @@
 
 namespace Homework\Service\Homework\Dao;
 
-interface HomeworkMemberDao
+interface HomeworkTeacherDao
 {
 	public function getHomeworkMember($id);
 	public function createHomeworkMember($data);
-	public function findStudentHomeworkByUserId($user_id,$homework_id);
-
+	
+	public function findTeacherHomeworkByUserId($user_id,$homework_id,$homework_member_id);
 	public function findHomeworkByUserIdAndLessonId($user_id,$lesson_id);
 	public function searchHomeworkMembers($conditions, $orderBy, $start, $limit);
     public function searchHomeworkMembersCount(array $conditions);

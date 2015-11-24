@@ -103,7 +103,7 @@
             <li><a href="{{ path('course_homework_preview', {courseId:course.id,homeworkId:homeworkId }) }}" class="preview-homework-btn" ><span class="glyphicon glyphicon-eye-open prs"></span>预览作业</a></li>
             <li><a href="javascript:;" class="delete-homework-btn" data-url="{{ path('course_manage_lesson_homework_remove', {courseId:course.id, lessonId:lesson.id, homeworkId:homeworkId }) }}" ><span class="glyphicon glyphicon-trash prs"></span>移除作业</a></li>
           {% else %}
-            <li><a href="{{ path('homework_add', {courseId:course.id, lessonId:lesson.id}) }}" target="_blank"><span class="glyphicon glyphicon-list-alt prs"></span>布置作业</a></li>
+            <li><a href="javascript:;" data-toggle="modal"  data-target="#modal" data-url="{{ path('homework_add', {courseId:course.id, lessonId:lesson.id}) }}"><span class="glyphicon glyphicon-list-alt prs"></span>布置作业</a></li>
           {% endif %}
             <li class="divider"></li>
           {% set lessonId = lesson.id %}
@@ -121,8 +121,7 @@
           <li class="divider"></li>
         {% endif %}
 
-        <li><a href="javascript:;" data-toggle="modal"  data-target="#modal" data-url="{{ path('homework_add', {courseId:course.id, lessonId:lesson.id}) }}"><span class="glyphicon glyphicon-paperclip prs"></span>测试JS事件</a></li>
-          <li class="divider"></li>
+       
         
         <li class="{% if lesson.status == 'published' %}hidden {% endif %}">
           <a href="javascript:;" class="publish-lesson-btn" data-url="{{ path('course_manage_lesson_publish', {courseId:course.id, lessonId:lesson.id}) }}">

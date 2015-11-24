@@ -8,13 +8,13 @@
 namespace Homework\Service\Homework\Dao\Impl;
 
 use Topxia\Service\Common\BaseDao;
-use Homework\Service\Homework\Dao\HomeworkMemberDao;
+use Homework\Service\Homework\Dao\HomeworkTeacherDao;
 
-class HomeworkMemberDaoImpl extends BaseDao implements HomeworkMemberDao
+class HomeworkTeacherDaoImpl extends BaseDao implements HomeworkTeacherDao
 {
 
 
-	protected $table = 'homework_member';
+	protected $table = 'homework_teacher';
     public function getHomeworkMember($id)
     {
         $sql = "SELECT * FROM {$this->table} WHERE id = ? LIMIT 1";
@@ -27,17 +27,17 @@ class HomeworkMemberDaoImpl extends BaseDao implements HomeworkMemberDao
         }
         return $this->getHomeworkMember($this->getConnection()->lastInsertId());
 	}
-    public function findStudentHomeworkByUserId($user_id,$homework_id)
+    
+        public function findTeacherHomeworkByUserId($user_id,$homework_id,$homework_member_id)
     {
-        $sql = "SELECT * FROM {$this->table} WHERE user_id = ? AND homework_id = ?  LIMIT 1";
-        $result= $this->getConnection()->fetchAll($sql, array($user_id, $homework_id)) ? : null;
+        $sql = "SELECT * FROM {$this->table} WHERE user_id = ? AND homework_id = ? AND homework_member_id = ? LIMIT 1";
+        $result= $this->getConnection()->fetchAll($sql, array($user_id, $homework_id,$homework_member_id)) ? : null;
         if(!empty($result)){
             return $result[0];
         }else{
             return $result;
         }
     }
-
     public function findHomeworkByUserIdAndLessonId($user_id,$lesson_id)
     {
         $sql = "SELECT * FROM {$this->table} WHERE user_id = ? AND lesson_id = ?  LIMIT 1";

@@ -8,21 +8,21 @@
 
 namespace Homework\Service\Homework\Impl;
 use Topxia\Service\Common\BaseService;
-use Homework\Service\Homework\HomeworkMemberService;
+use Homework\Service\Homework\HomeworkTeacherService;
 use Topxia\Common\ArrayToolkit;
 
-class HomeworkMemberServiceImpl extends BaseService implements HomeworkMemberService {
+class HomeworkTeacherServiceImpl extends BaseService implements HomeworkTeacherService {
     protected function getHomeworkMemberDao() {
         
-        return $this->createDao('Homework:Homework.HomeworkMemberDao');
+        return $this->createDao('Homework:Homework.HomeworkTeacherDao');
     }
     public function getHomeworkMember($id){
         return $this->getHomeworkMemberDao()->getHomeworkMember($id);
     }
-    public function findStudentHomeworkByUserId($user_id,$homework_id){
-        return $this->getHomeworkMemberDao()->findStudentHomeworkByUserId($user_id,$homework_id);
-    }
     
+    public function findTeacherHomeworkByUserId($user_id,$homework_id,$homework_member_id){
+        return $this->getHomeworkMemberDao()->findTeacherHomeworkByUserId($user_id,$homework_id,$homework_member_id);
+    }
     public function findHomeworkByUserIdAndLessonId($user_id,$lesson_id)
     {
         return $this->getHomeworkMemberDao()->findHomeworkByUserIdAndLessonId($user_id,$lesson_id);
@@ -44,6 +44,6 @@ class HomeworkMemberServiceImpl extends BaseService implements HomeworkMemberSer
         return $this->getHomeworkMemberDao()->updateHomeworkMember($id,$homeworkMember);
     }
     public function findHomeworkMembersByLessonId($lessonId){
-
+        
     }
 }

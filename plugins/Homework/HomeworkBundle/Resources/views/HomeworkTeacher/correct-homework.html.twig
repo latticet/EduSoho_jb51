@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>做作业喽</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+</head>
+<body>
+<h1>{{ homework.title }}</h1>
+<p>{{ homework.content }}</p>
+{% if homework_member.student %}
+<div>
+{% if homework_member.student.pic_path %}
+<img src="{{ homework_member.student.pic_path }}">
+{% endif %}
+    
+    <div>{{ homework_member.student.remark }}</div>
+</div>
+
+{% endif %}
+
+<div>
+   {% if homework_member.teacher.pic_path %}
+<img src="{{ homework_member.teacher.pic_path }}">
+{% endif %}
+</div>
+    <form method="post" enctype="multipart/form-data" action="/app_dev.php/homework/file/upload">
+<label for="">学生作业ID:</label><input type="text" name="homework_member_id" value="{{ homework_member.student.id }}">
+    <label for="">作业ID:</label><input type="text" name="homework_id" value="{{ homework.id }}">
+    <label for="">课程ID:</label><input type="text" name="course_id" value="{{ course.id }}">
+    <label for="">章节ID:</label><input type="text" name="lesson_id" value="{{ lesson.id }}">
+    <label for="">提交类型</label><input type="text" name="member_type" value="teacher">
+    
+<div>
+    
+    <input type="file" name="file">
+</div>
+
+
+<textarea name="remark" >{{ homework_member.teacher.remark }}</textarea>
+   
+    	
+    	<input type="submit" value="submit">
+    </form>
+   
+</body>
+</html>
