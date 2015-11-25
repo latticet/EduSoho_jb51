@@ -19,5 +19,6 @@ interface HomeworkMemberDao
     public function searchHomeworkMembersCount(array $conditions);
     public function updateHomeworkMember($id,$homeworkMember);
     public function findHomeworkMembersByLessonId($lessonId);
+    public function delete($id);
 
 }

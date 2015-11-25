@@ -13,6 +13,7 @@ public function findExercisesByLessonIds($lessonIds);
     public function getHomeworkByLessonId($lessonId);
     public function searchResults();
     public function uploadMaterial($material);    
+    public function delete($id);
 
 
 }

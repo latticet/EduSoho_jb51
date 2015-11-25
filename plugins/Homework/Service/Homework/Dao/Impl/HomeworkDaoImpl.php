@@ -110,5 +110,7 @@ class HomeworkDaoImpl extends BaseDao implements HomeworkDao
         return $builder->execute()->fetchColumn(0);
    
     }
-        
+    public function delete($id){
+return $this->getConnection()->delete($this->table, array('id' => $id));;
+    }   
 }

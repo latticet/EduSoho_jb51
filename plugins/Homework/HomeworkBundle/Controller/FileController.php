@@ -10,6 +10,7 @@ use Homework\Service\Homework\HomeworkService;
 
 class FileController extends \Topxia\WebBundle\Controller\BaseController {
     public function uploadAction(Request $request) {
+      
         $homework_id = $request->request->get('homework_id', 0);
         $course_id = $request->request->get('course_id', 0);
         $lesson_id = $request->request->get('lesson_id', 0);
@@ -39,16 +40,23 @@ class FileController extends \Topxia\WebBundle\Controller\BaseController {
             $user = $this->getCurrentUser();
             $data['user_id'] = $user['id'];
         }
+        
         //保存作业记录
         if ($member_type == 'teacher') {
             $data['homework_member_id'] = $request->request->get('homework_member_id', 0);
             $service = $this->getHomeworkTeacherService();
+            $check_data = $service->findHomeworkByUserIdAndLessonId($data['user_id'], $lesson_id);
+        if (!empty($check_data)) {
+            $data['update_at'] = $_SERVER['REQUEST_TIME'];
+            
+            $info = $service->updateHomeworkTeacher($check_data['id'], $data);
+        } else {
+            $data['create_at'] = $_SERVER['REQUEST_TIME'];
+            $info = $service->createHomeworkTeacher($data);
+        }
         } elseif ($member_type == 'student') {
             $service = $this->getHomeworkMemberService();
-        } else {
-            die('意外的情况');
-        }
-        $check_data = $service->findHomeworkByUserIdAndLessonId($data['user_id'], $lesson_id);
+            $check_data = $service->findHomeworkByUserIdAndLessonId($data['user_id'], $lesson_id);
         if (!empty($check_data)) {
             $data['update_at'] = $_SERVER['REQUEST_TIME'];
             $info = $service->updateHomeworkMember($check_data['id'], $data);
@@ -56,9 +64,13 @@ class FileController extends \Topxia\WebBundle\Controller\BaseController {
             $data['create_at'] = $_SERVER['REQUEST_TIME'];
             $info = $service->createHomeworkMember($data);
         }
-        
-        return $this->createJsonResponse($info);
+        } else {
+            die('意外的情况');
+        }
+      
+        return $this->redirect($_SERVER['HTTP_REFERER']);
     }
+
     public function cropImgAction(Request $request) {
         $options = $request->request->all();
         if (empty($options['group'])) {

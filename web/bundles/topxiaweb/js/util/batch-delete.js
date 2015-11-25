@@ -27,6 +27,12 @@ define(function(require, exports, module) {
             Notify.info('正在删除' + name + '，请稍等。', 60);
             
             $.post($btn.data('url'), {ids:ids}, function(response){
+                if(response===true){
+                    Notify.success('删除成功！');
+                }else{
+                    Notify.danger(response.message,3);                    
+                }
+                
                 window.location.reload();
             });
 

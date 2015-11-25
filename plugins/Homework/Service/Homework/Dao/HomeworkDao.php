@@ -29,5 +29,5 @@ interface HomeworkDao
 
 	public function searchHomeworks($conditions, $orderBy, $start, $limit);
 	public function searchHomeworksCount(array $conditions);
-
+    public function delete($id);
 }

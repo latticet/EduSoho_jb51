@@ -159,4 +159,7 @@ class HomeworkServiceImpl extends BaseService implements HomeworkService {
         
         return $material;
     }
+        public function delete($id){
+          return  $this->getHomeworkDao()->delete($id);
+        }
 }

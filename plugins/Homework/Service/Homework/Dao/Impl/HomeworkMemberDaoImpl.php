@@ -92,5 +92,9 @@ class HomeworkMemberDaoImpl extends BaseDao implements HomeworkMemberDao
             ->andWhere('lesson_id = :lesson_id');
         return $builder;
     }
+    public function delete($id){      
+        
+        return $this->getConnection()->delete($this->table, array('id' => $id));
+    }
         
 }

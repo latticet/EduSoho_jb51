@@ -182,10 +182,7 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         if (!isset($homework_student['remark'])) {
             $homework_student['remark'] = '';
         }
-        $homework_teacher = $homeworkMemberService->findTeacherHomeworkByUserId($teacherId, $lesson['homeworkId']);
-        $homework_teacher['pic_path'] = $this->picParse($homework_teacher['pic']);
         $homework_member['student'] = $homework_student;
-        $homework_member['teacher'] = $homework_teacher;
         if (empty($homework)) {
             $homework = array();
             $homework['id'] = 0;
@@ -211,6 +208,37 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         return $this->render('HomeworkBundle:Homework:add.html.twig', array(
             'name' => $name
         ));
+    }
+    public function deleteAction(Request $request) {
+        $homeworkMemberService = $this->getHomeworkMemberService();
+        $ids = $request->request->all();
+        if (!empty($ids)) {
+            
+            foreach ($ids as $key => $homework_id_arr) {
+                $homework_id = $homework_id_arr[0];
+                $conditions = array();
+                $conditions['homework_id'] = $homework_id;
+                $count = $homeworkMemberService->searchHomeworkMembersCount($conditions);
+                if ($count > 0) {
+                    $response = array();
+                    $response['message'] = '已经有学生提交了相应的作业,请先删除相关内容!';
+                    
+                    return $this->createJsonResponse($response);
+                }
+                $this->deleteHomework($homework_id);
+            }
+        }
+        
+        return $this->createJsonResponse(true);
+    }
+    public function deleteHomework($homework_id) {
+        $homeworkService = $this->getHomeworkService();
+        $homework = $homeworkService->getHomework($homework_id);
+        if (!empty($homework)) {
+            $homeworkService->delete($homework_id);
+        }
+        
+        return true;
     }
     public function uploadHomeworkFileAction(Request $request, $courseId) {
         $course = $this->getCourseService()->getCourse($courseId);
@@ -313,5 +341,11 @@ class HomeworkController extends \Topxia\WebBundle\Controller\BaseController {
         }
         
         return $url;
+    }
+    protected function getRootPath() {
+        $appRoot = $this->get('kernel')->getRootDir(); // 这里得到的是app目录的绝对路径
+        $root = dirname($appRoot);
+        
+        return $root;
     }
 }

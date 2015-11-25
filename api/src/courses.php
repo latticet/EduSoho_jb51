@@ -40,6 +40,14 @@ $api->post('/{id}/favorite', function (Request $request, $id) {
     );
 });
 
+//获取分类代码
+$api->get('/category/codes', function () {
+   
+$categoryCodes = ServiceKernel::instance()->createService('Taxonomy.CategoryService')->findAllCategories();
+
+    
+    return $categoryCodes;
+});
 
 
 //根据分类编码获取课程
@@ -91,4 +99,23 @@ $api->get('/{courseId}/reviews', function (Request $request,$courseId) {
     return $data;
 });
 //获取个人评论
+$api->get('/{courseId}/reviews/user/{userId}', function ($courseId,$userId) {
+    
+    $reviewService = ServiceKernel::instance()->createService('Course.ReviewService');
+    $review = $reviewService->getUserCourseReview($userId, $courseId);
+    $review = filter($review,'course');
+    return $review;
+});
+//添加个人评论
+$api->post('/{courseId}/reviews/user/{userId}', function (Request $request,$courseId,$userId) {
+    $fields=array();
+    $fields['rating']=$request->request->get('rating');
+    $fields['content']=$request->request->get('content');
+    $fields['userId']=$userId;
+    $fields['courseId']=$courseId;
+    $reviewService = ServiceKernel::instance()->createService('Course.ReviewService');
+    $review = $reviewService->saveReview($fields);
+    $review = filter($review,'course');
+    return $review;
+});
 return $api;

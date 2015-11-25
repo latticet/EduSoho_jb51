@@ -34,8 +34,10 @@ $homework_teacher['pic_path'] = $this->picParse($homework_teacher['pic']);
     
         }
         
+$homework_student['user_info'] = $student_info;
 
             $homework_member['student'] = $homework_student;
+   $homework_teacher['user_info']= $teacher_info;        
         $homework_member['teacher'] = $homework_teacher;
 
         if (empty($homework)) {
@@ -43,7 +45,7 @@ $homework_teacher['pic_path'] = $this->picParse($homework_teacher['pic']);
             $homework['id'] = 0;
             $homework['content'] = '';
         }
-        $tpl = 'HomeworkBundle:HomeworkTeacher:correct-homework.html.twig';
+        $tpl = 'HomeworkBundle:HomeworkTeacher:correct-homework-member.html.twig';
         $assignBox = array();
         $assignBox['homework'] = $homework;
         $assignBox['course'] = $course;

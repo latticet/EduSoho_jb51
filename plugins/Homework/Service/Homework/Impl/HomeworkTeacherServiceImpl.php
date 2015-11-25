@@ -12,38 +12,45 @@ use Homework\Service\Homework\HomeworkTeacherService;
 use Topxia\Common\ArrayToolkit;
 
 class HomeworkTeacherServiceImpl extends BaseService implements HomeworkTeacherService {
-    protected function getHomeworkMemberDao() {
+    protected function getHomeworkTeacherDao() {
         
         return $this->createDao('Homework:Homework.HomeworkTeacherDao');
     }
-    public function getHomeworkMember($id){
-        return $this->getHomeworkMemberDao()->getHomeworkMember($id);
+    public function getHomeworkTeacher($id){
+        return $this->getHomeworkTeacherDao()->getHomeworkTeacher($id);
     }
     
     public function findTeacherHomeworkByUserId($user_id,$homework_id,$homework_member_id){
-        return $this->getHomeworkMemberDao()->findTeacherHomeworkByUserId($user_id,$homework_id,$homework_member_id);
+        return $this->getHomeworkTeacherDao()->findTeacherHomeworkByUserId($user_id,$homework_id,$homework_member_id);
     }
     public function findHomeworkByUserIdAndLessonId($user_id,$lesson_id)
     {
-        return $this->getHomeworkMemberDao()->findHomeworkByUserIdAndLessonId($user_id,$lesson_id);
+        return $this->getHomeworkTeacherDao()->findHomeworkByUserIdAndLessonId($user_id,$lesson_id);
     }
-    public function createHomeworkMember($data){
-    	return $this->getHomeworkMemberDao()->createHomeworkMember($data);
+    public function createHomeworkTeacher($data){
+    	return $this->getHomeworkTeacherDao()->createHomeworkTeacher($data);
     }
-    public function searchHomeworkMembers($conditions, $orderBy, $start, $limit)
+    public function searchHomeworkTeachers($conditions, $orderBy, $start, $limit)
     {
-     return $this->getHomeworkMemberDao()->searchHomeworkMembers($conditions, $orderBy, $start, $limit);   
+     return $this->getHomeworkTeacherDao()->searchHomeworkTeachers($conditions, $orderBy, $start, $limit);   
     }
-    public function searchHomeworkMembersCount(array $conditions){
+    public function searchHomeworkTeachersCount(array $conditions){
 
-       return $this->getHomeworkMemberDao()->searchHomeworkMembersCount($conditions);
+       return $this->getHomeworkTeacherDao()->searchHomeworkTeachersCount($conditions);
    
     }
-    public function updateHomeworkMember($id,$homeworkMember)
+    public function updateHomeworkTeacher($id,$HomeworkTeacher)
     {
-        return $this->getHomeworkMemberDao()->updateHomeworkMember($id,$homeworkMember);
+        return $this->getHomeworkTeacherDao()->updateHomeworkTeacher($id,$HomeworkTeacher);
     }
-    public function findHomeworkMembersByLessonId($lessonId){
+    public function findHomeworkTeachersByLessonId($lessonId){
         
+    }
+    public function getHomeworkTeacherByHomeworkMemberId($homework_member_id)
+    {
+        return $this->getHomeworkTeacherDao()->getHomeworkTeacherByHomeworkMemberId($homework_member_id);
+    }
+    public function delete($id) {
+        return $this->getHomeworkTeacherDao()->delete($id);
     }
 }

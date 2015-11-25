@@ -28,11 +28,11 @@
 {% endif %}
 </div>
     <form method="post" enctype="multipart/form-data" action="/app_dev.php/homework/file/upload">
-<label for="">学生作业ID:</label><input type="text" name="homework_member_id" value="{{ homework_member.student.id }}">
-    <label for="">作业ID:</label><input type="text" name="homework_id" value="{{ homework.id }}">
-    <label for="">课程ID:</label><input type="text" name="course_id" value="{{ course.id }}">
-    <label for="">章节ID:</label><input type="text" name="lesson_id" value="{{ lesson.id }}">
-    <label for="">提交类型</label><input type="text" name="member_type" value="teacher">
+<input type="hidden" name="homework_member_id" value="{{ homework_member.student.id }}">
+    <input type="hidden" name="homework_id" value="{{ homework.id }}">
+    <input type="hidden" name="course_id" value="{{ course.id }}">
+    <input type="hidden" name="lesson_id" value="{{ lesson.id }}">
+    <input type="hidden" name="member_type" value="teacher">
     
 <div>
     
