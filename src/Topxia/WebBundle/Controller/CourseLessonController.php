@@ -24,7 +24,7 @@ class CourseLessonController extends BaseController
         if(!$lesson["free"] && empty($timelimit)) {
             list($course, $member) = $this->getCourseService()->tryTakeCourse($courseId);
         }
-
+        
         return $this->forward('TopxiaWebBundle:Player:show', array(
             'id' => $lesson["mediaId"],
             'mode' => empty($lesson["free"]) ? $request->query->get('mode', '') : ''

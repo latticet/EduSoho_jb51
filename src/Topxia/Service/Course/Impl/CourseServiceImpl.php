@@ -1399,8 +1399,8 @@ class CourseServiceImpl extends BaseService implements CourseService
 		$courses = $this->getCourseDao()->findCoursesByIds($courseIds);
 		$maxStudentNum = ArrayToolkit::column($courses,'maxStudentNum');
 		$timeSlotOccupiedStuNums = array_sum($maxStudentNum);
-
-		return $liveStudentCapacity - $timeSlotOccupiedStuNums;
+return 10000 - $timeSlotOccupiedStuNums;
+		//return $liveStudentCapacity - $timeSlotOccupiedStuNums;
 	}
 
 	public function canLearnLesson($courseId, $lessonId)

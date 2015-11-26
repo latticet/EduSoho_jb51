@@ -132,7 +132,7 @@ class LiveCourseController extends BaseController
         }
 
         if (empty($lesson['mediaId'])) {
-            throw $this->createAccessDeniedException('直播教室不存在！');
+           // throw $this->createAccessDeniedException('直播教室不存在！');
         }
 
         if ($lesson['startTime'] - time() > 7200) {
@@ -179,13 +179,15 @@ class LiveCourseController extends BaseController
             return $this->createMessageResponse('info', '你好像忘了登录哦？', null, 3000, $this->generateUrl('login'));
         }
 
+
         $lesson = $this->getCourseService()->getCourseLesson($courseId, $lessonId);
+       
         if (empty($lesson)) {
             return $this->createMessageResponse('info', '课时不存在！');
         }
 
         if (empty($lesson['mediaId'])) {
-            return $this->createMessageResponse('info', '直播教室不存在！');
+           // return $this->createMessageResponse('info', '直播教室不存在！');
         }
 
         if ($lesson['startTime'] - time() > 7200) {
@@ -193,7 +195,7 @@ class LiveCourseController extends BaseController
         }
 
         if ($lesson['endTime'] < time()) {
-            return $this->createMessageResponse('info', '直播已结束!');
+         //   return $this->createMessageResponse('info', '直播已结束!');
         }
 
         $params = array(
@@ -216,19 +218,21 @@ class LiveCourseController extends BaseController
             $result = $client->entryLive($params);
 
             if (empty($result) || isset($result['error'])) {
-                return $this->createMessageResponse('info', $result['errorMsg']);
+               // return $this->createMessageResponse('info', $result['errorMsg']);
             }
         }
-
-        return $this->render("TopxiaWebBundle:LiveCourse:classroom.html.twig", array(
-            'courseId' => $courseId, 
-            'lessonId' => $lessonId,
-            'lesson' => $lesson,
-            'url' => $this->generateUrl('live_classroom_url',array(
-                'courseId' => $courseId, 
-                'lessonId' => $lessonId
-            ))
-        ));
+        // $url = $this->generateUrl('live_classroom_url',array(
+        //         'courseId' => $courseId, 
+        //         'lessonId' => $lessonId
+        //     ));
+        $url='';
+$tpl='TopxiaWebBundle:LiveCourse:classroom.html.twig';
+$assignBox = array();
+$assignBox['courseId']=$courseId;
+$assignBox['lessonId']=$lessonId;
+$assignBox['lesson']=$lesson;
+$assignBox['url']=$url;
+        return $this->render($tpl, $assignBox);
     }
 
     public function verifyAction(Request $request)

@@ -30,24 +30,29 @@ class LiveCourseLessonManageController extends BaseController
             if (!empty($liveLogo) && array_key_exists("live_logo", $liveLogo) && !empty($liveLogo["live_logo"])) {
                 $liveLogoUrl = $this->getServiceKernel()->getEnvVariable('baseUrl')."/".$liveLogo["live_logo"];
             }
-
-            $client = new EdusohoLiveClient();
-            $live = $client->createLive(array(
-                'summary' => $liveLesson['summary'],
-                'title' => $liveLesson['title'],
-                'speaker' => $speaker,
-                'startTime' => $liveLesson['startTime'] . '',
-                'endTime' => ($liveLesson['startTime'] + $liveLesson['length']*60) . '',
-                'authUrl' => $this->generateUrl('live_auth', array(), true),
-                'jumpUrl' => $this->generateUrl('live_jump', array('id' => $liveLesson['courseId']), true),
-                'liveLogoUrl' => $liveLogoUrl
-            ));
+            //替换掉原来的直接 来个假直播
+$live=array();
+$live['id']='9999';
+$live['provider']='zc888';
+            // $client = new EdusohoLiveClient();
+            // $live = $client->createLive(array(
+            //     'summary' => $liveLesson['summary'],
+            //     'title' => $liveLesson['title'],
+            //     'speaker' => $speaker,
+            //     'startTime' => $liveLesson['startTime'] . '',
+            //     'endTime' => ($liveLesson['startTime'] + $liveLesson['length']*60) . '',
+            //     'authUrl' => $this->generateUrl('live_auth', array(), true),
+            //     'jumpUrl' => $this->generateUrl('live_jump', array('id' => $liveLesson['courseId']), true),
+            //     'liveLogoUrl' => $liveLogoUrl
+            // ));
             if (empty($live)) {
-                throw new \RuntimeException('创建直播教室失败，请重试！');
+               // throw new \RuntimeException('创建直播教室失败，请重试！');
             }
             if (isset($live['error'])) {
-                throw new \RuntimeException($live['error']);
+               // throw new \RuntimeException($live['error']);
             }
+            
+
 
             $liveLesson['mediaId'] = $live['id'];
             $liveLesson['liveProvider'] = $live['provider'];

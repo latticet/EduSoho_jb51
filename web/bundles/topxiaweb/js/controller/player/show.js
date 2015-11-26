@@ -29,6 +29,7 @@ define(function(require, exports, module) {
         var html = "";
 
         if(fileType == 'video'){
+            console.log(fileType);
             if (videoHtml.data('player') == 'local-video-player'){
                 html += '<video id="lesson-player" style="width: 100%;height: 100%;" class="video-js vjs-default-skin" controls preload="auto"></video>';
             } else {

@@ -61,6 +61,7 @@ class Controller extends ContainerAware
      */
     public function forward($controller, array $path = array(), array $query = array())
     {
+        
         $path['_controller'] = $controller;
         $subRequest = $this->container->get('request')->duplicate($query, null, $path);
 

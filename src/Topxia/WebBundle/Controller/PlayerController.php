@@ -12,9 +12,12 @@ class PlayerController extends BaseController
 {
 	public function showAction(Request $request, $id, $mode = '')
 	{
+        // var_dump($id);
+        // die();
         $agentInWhiteList = $this->agentInWhiteList($request->headers->get("user-agent"));
 
         $file = $this->getUploadFileService()->getFile($id);
+        
         if(empty($file)){
             throw $this->createNotFoundException();
         }
