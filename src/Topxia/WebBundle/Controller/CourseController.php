@@ -295,6 +295,7 @@ class CourseController extends CourseBaseController
 
       	$courseAbout = preg_replace("/ /","",$courseAbout); 
       	$courseAbout = substr( $courseAbout, 0, 100 );
+      	
 		return $this->render("TopxiaWebBundle:Course:{$course['type']}-show.html.twig", array(
 			'course' => $course,
 			'member' => $member,
@@ -444,6 +445,7 @@ class CourseController extends CourseBaseController
 		
 		try{
 			list($course, $member) = $this->getCourseService()->tryTakeCourse($id);
+			
 			if ($member && !$this->getCourseService()->isMemberNonExpired($course, $member)) {
 				return $this->redirect($this->generateUrl('course_show',array('id' => $id)));
 			}
@@ -459,6 +461,7 @@ class CourseController extends CourseBaseController
 		}catch(Exception $e){
 			throw $this->createAccessDeniedException('抱歉，未发布课程不能学习！');
 		}
+
 		return $this->render('TopxiaWebBundle:Course:learn.html.twig', array(
 			'course' => $course,
 		));
@@ -515,6 +518,7 @@ class CourseController extends CourseBaseController
 
 	public function recordWatchingTimeAction(Request $request,$lessonId,$time)
 	{	
+
 		$user = $this->getCurrentUser();
 
 		if(!$user->isLogin()){

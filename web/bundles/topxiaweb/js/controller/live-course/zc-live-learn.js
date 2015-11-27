@@ -79,6 +79,7 @@ define(function(require, exports, module) {
             var toolbar = this._toolbar,
                 self = this;
             var url = '../../course/' + this.get('courseId') + '/lesson/' + this.get('lessonId') + '/learn/start';
+            
             $.post(url, function(result) {
                 if (result == true) {
                     toolbar.trigger('learnStatusChange', {lessonId:self.get('lessonId'), status: 'learning'});
@@ -92,6 +93,7 @@ define(function(require, exports, module) {
             self = this;
 
             var url = '../../course/' + this.get('courseId') + '/lesson/' + this.get('lessonId') + '/learn/finish';
+            
             $.post(url, function(response) {
                 if (response.isLearned) {
                     $('#course-learned-modal').modal('show');
@@ -110,6 +112,7 @@ define(function(require, exports, module) {
                 toolbar = this._toolbar,
                 self = this;
             var url = '../../course/' + this.get('courseId') + '/lesson/' + this.get('lessonId') + '/learn/cancel';
+           
             $.post(url, function(json) {
                 $btn.removeClass('btn-success');
                 $btn.find('.glyphicon').removeClass('glyphicon-check').addClass('glyphicon-unchecked');
@@ -237,7 +240,7 @@ define(function(require, exports, module) {
                     $("#lesson-iframe-content").html(html);
                     $("#lesson-iframe-content").show();
 
-                } else if (lesson.type == 'video' || lesson.type == 'audio') {
+                } else if (lesson.type == 'live' || lesson.type == 'audio') {
                     if(lesson.mediaSource == 'self') {
                         var lessonVideoDiv = $('#lesson-video-content');
 
@@ -356,13 +359,14 @@ define(function(require, exports, module) {
 
                         if (0< startLeftSeconds && startLeftSeconds < 7200) {
                              $liveNotice = "<p>直播将于 <strong>"+liveStartTimeFormat+"</strong> 开始，于 <strong>"+liveEndTimeFormat+"</strong> 结束，请在课前10分钟内提早进入。</p>";
-                            // var url = self.get('courseUri') + '/lesson/' + id + '/live_entry';
-                             var url = self.get('courseUri') + '/live_entry'+ '?lesson=' + id + '#lesson/' + id;
+                             //var url = self.get('courseUri') + '/lesson/' + id + '/live_entry';
+                              var url = self.get('courseUri') + '/live_entry'+ '?lesson=' + id+ '#lesson/' + id ;
+                            
                              if(lesson.isTeacher) {
                                 $countDown = $replayGuid;
-                                $countDown += "<p>还剩"+ hours + "小时"+ minutes+ "分钟"+seconds + "秒&nbsp;<a class='btn btn-primary' href='" + url + "' target='_blank'>进入直播教室</a><br><br></p>";
+                                $countDown += "<p>还剩"+ hours + "小时"+ minutes+ "分钟"+seconds + "秒&nbsp;<a class='btn btn-primary' href='" + url + "' target='_blank'>进入直==播教室</a><br><br></p>";
                             }else{
-                                $countDown = "<p>还剩"+ hours + "小时"+ minutes+ "分钟"+seconds + "秒&nbsp;<a class='btn btn-primary' href='" + url + "' target='_blank'>进入直播教室</a><br><br></p>";
+                                $countDown = "<p>还剩"+ hours + "小时"+ minutes+ "分钟"+seconds + "秒&nbsp;<a class='btn btn-primary' href='" + url + "' target='_blank'>进入直==播教室</a><br><br></p>";
                             }
                         };
 
@@ -370,12 +374,13 @@ define(function(require, exports, module) {
                             clearInterval(iID);
                              $liveNotice = "<p>直播已经开始，直播将于 <strong>"+liveEndTimeFormat+"</strong> 结束。</p>";
                              //var url = self.get('courseUri') + '/lesson/' + id + '/live_entry';
-                             var url = self.get('courseUri') + '/live_entry'+ '?lesson=' + id + '#lesson/' + id;
+                            var url = self.get('courseUri') + '/live_entry'+ '?lesson=' + id+ '#lesson/' + id ;
+                             
                             if(lesson.isTeacher) {
                                 $countDown = $replayGuid;
-                                $countDown += "<p><a class='btn btn-primary' href='" + url + "' target='_blank'>进入直播教室</a><br><br></p>";
+                                $countDown += "<p><a class='btn btn-primary' href='" + url + "' target='_blank'>进入直==播教室</a><br><br></p>";
                             }else{
-                                $countDown = "<p><a class='btn btn-primary' href='" + url + "' target='_blank'>进入直播教室</a><br><br></p>";
+                                $countDown = "<p><a class='btn btn-primary' href='" + url + "' target='_blank'>进入直==播教室</a><br><br></p>";
                             }
                         };
 
@@ -653,6 +658,7 @@ define(function(require, exports, module) {
             var posted = false;
             if(mediaPlayingCounter >= this.interval || (mediaPlayingCounter>0 && !playing)){
                 var url="../../../../course/"+this.lessonId+'/watch/time/'+mediaPlayingCounter;
+               
                 var self = this;
                 $.get(url, function(response) {
                     if (self.watchLimit && response.watchLimited) {
@@ -695,5 +701,5 @@ define(function(require, exports, module) {
             }
         });
     };
-
+console.log('end');
 });

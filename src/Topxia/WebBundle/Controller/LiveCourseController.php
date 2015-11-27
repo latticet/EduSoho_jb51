@@ -172,8 +172,14 @@ class LiveCourseController extends BaseController
         
     }
 
-    public function entryAction(Request $request,$courseId, $lessonId)
+    public function entryAction(Request $request,$courseId, $lessonId=0)
     {
+
+
+        $lesson_id = $request->query->get('lesson');
+        if(!empty($lesson_id)){
+           $lessonId= $lesson_id;          
+        }
         $user = $this->getCurrentUser();
         if (!$user->isLogin()) {
             return $this->createMessageResponse('info', '你好像忘了登录哦？', null, 3000, $this->generateUrl('login'));
@@ -187,7 +193,7 @@ class LiveCourseController extends BaseController
         }
 
         if (empty($lesson['mediaId'])) {
-           // return $this->createMessageResponse('info', '直播教室不存在！');
+            return $this->createMessageResponse('info', '直播教室不存在！');
         }
 
         if ($lesson['startTime'] - time() > 7200) {
@@ -195,7 +201,7 @@ class LiveCourseController extends BaseController
         }
 
         if ($lesson['endTime'] < time()) {
-         //   return $this->createMessageResponse('info', '直播已结束!');
+          return $this->createMessageResponse('info', '直播已结束!');
         }
 
         $params = array(
@@ -226,12 +232,13 @@ class LiveCourseController extends BaseController
         //         'lessonId' => $lessonId
         //     ));
         $url='';
-$tpl='TopxiaWebBundle:LiveCourse:classroom.html.twig';
+        $course = $this->getCourseService()->getCourse($courseId);
+        $course['type']='video';
+//$tpl='TopxiaWebBundle:LiveCourse:classroom.html.twig';
+$tpl = 'TopxiaWebBundle:LiveCourse:zc-live-learn.html.twig';
 $assignBox = array();
-$assignBox['courseId']=$courseId;
-$assignBox['lessonId']=$lessonId;
-$assignBox['lesson']=$lesson;
-$assignBox['url']=$url;
+$assignBox['course']=$course;
+
         return $this->render($tpl, $assignBox);
     }
 

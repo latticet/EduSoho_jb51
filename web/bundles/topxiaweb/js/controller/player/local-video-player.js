@@ -85,7 +85,9 @@ define(function(require, exports, module) {
         },
 
         setCurrentTime: function(time) {
+            
 			this.get("player").currentTime(time);
+
         },
 
         isPlaying: function() {

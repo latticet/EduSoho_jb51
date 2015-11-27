@@ -10,10 +10,17 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PlayerController extends BaseController
 {
-	public function showAction(Request $request, $id, $mode = '')
+	public function showAction(Request $request, $id, $mode = '',$live_info='')
 	{
-        // var_dump($id);
-        // die();
+        $is_live =0;
+        $start_time =0;
+        if(!empty($live_info)){
+            if($live_info['type']=='live'){
+            $is_live=1;
+            $start_time= $live_info['startTime'];
+        }
+        }
+        
         $agentInWhiteList = $this->agentInWhiteList($request->headers->get("user-agent"));
 
         $file = $this->getUploadFileService()->getFile($id);
@@ -35,19 +42,24 @@ class PlayerController extends BaseController
             }
         } else if($file["storage"] == 'local' && $file["type"] == 'video'){
             $player = "local-video-player";
-        } else if($file["type"] == 'audio'){
+        } else if($file["storage"] == 'local_live' &&$file["type"] == 'audio'){
+            $player = "local-live-video-player";
+        }else if($file["type"] == 'audio'){
             $player = "audio-player";
         }
 
         $url = $this->getPlayUrl($id, $mode);
+        $tpl='TopxiaWebBundle:Player:show.html.twig';
+        
+        $assignBox = array();
+$assignBox['file']=$file;
+$assignBox['url']=$url;
+$assignBox['player']=$player;
+$assignBox['agentInWhiteList']=$agentInWhiteList;
+$assignBox['live']=$is_live;
+$assignBox['startTime']=$start_time;
 
-
-		return $this->render('TopxiaWebBundle:Player:show.html.twig', array(
-			'file' => $file,
-			'url' => $url,
-			'player' => $player,
-            'agentInWhiteList' => $agentInWhiteList
-        ));
+		return $this->render($tpl,$assignBox );
 	}
 
     protected function agentInWhiteList($userAgent)

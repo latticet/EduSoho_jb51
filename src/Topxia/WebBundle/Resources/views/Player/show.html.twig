@@ -14,7 +14,9 @@
       <div style="position:absolute;top:0;bottom:0;left:0;right:0;">
         <div id="lesson-video-content" 
         data-user-id="{{app.user.id|default(0)}}" 
-        data-file-id="{{file.id}}" 
+        data-file-id="{{file.id}}"
+        data-my-live="{{live}}" 
+        data-start-time="{{startTime}}" 
         data-file-type="{{file.type}}" 
         data-url="{{url}}"
         data-player="{{player}}"

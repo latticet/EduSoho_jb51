@@ -24,11 +24,14 @@ class CourseLessonController extends BaseController
         if(!$lesson["free"] && empty($timelimit)) {
             list($course, $member) = $this->getCourseService()->tryTakeCourse($courseId);
         }
-        
-        return $this->forward('TopxiaWebBundle:Player:show', array(
-            'id' => $lesson["mediaId"],
-            'mode' => empty($lesson["free"]) ? $request->query->get('mode', '') : ''
-        ));
+       
+       $assignBox = array();
+$assignBox['id']=$lesson["mediaId"];
+$assignBox['mode'] = empty($lesson["free"]) ? $request->query->get('mode', '') : '';
+
+$assignBox['live_info']['type']=$lesson['type'];
+$assignBox['live_info']['startTime']=$lesson['startTime'];
+        return $this->forward('TopxiaWebBundle:Player:show', $assignBox);
     }
 
     public function previewAction(Request $request, $courseId, $lessonId = 0)
