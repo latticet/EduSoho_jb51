@@ -1079,7 +1079,7 @@ class CourseServiceImpl extends BaseService implements CourseService
 
 	protected function fillLessonMediaFields(&$lesson)
 	{
-		if (in_array($lesson['type'], array('video', 'audio', 'ppt','document','flash'))) {
+		if (in_array($lesson['type'], array('video', 'audio', 'ppt','document','flash','live'))) {
 			$media = empty($lesson['media']) ? null : $lesson['media'];
 			if (empty($media) || empty($media['source']) || empty($media['name'])) {
 				throw $this->createServiceException("media参数不正确，添加课时失败！");
@@ -1111,6 +1111,7 @@ class CourseServiceImpl extends BaseService implements CourseService
 		} elseif ($lesson['type'] == 'testpaper') {
 			$lesson['mediaId'] = $lesson['mediaId'];
 		} elseif ($lesson['type'] == 'live') {
+
 		} else {
 			$lesson['mediaId'] = 0;
 			$lesson['mediaName'] = '';

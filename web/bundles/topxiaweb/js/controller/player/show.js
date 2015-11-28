@@ -102,11 +102,6 @@ define(function(require, exports, module) {
 
             player.setCurrentTime(time);
 
-            // if(time>0){
-            //     console.log('DurationStorage:'+DurationStorage.get(userId, fileId));
-            //         player.setCurrentTime(DurationStorage.get(userId, fileId));
-            //     }
-
             player.play();
         });
 

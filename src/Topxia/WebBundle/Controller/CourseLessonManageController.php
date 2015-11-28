@@ -118,6 +118,7 @@ class CourseLessonManageController extends BaseController
 				unset($lesson['minute']);
 				unset($lesson['second']);
 			}
+			
 			$lesson = $this->getCourseService()->createLesson($lesson);
 			
 			$file = false;
