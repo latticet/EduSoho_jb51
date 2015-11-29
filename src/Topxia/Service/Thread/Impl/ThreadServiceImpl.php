@@ -317,6 +317,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
 
     public function findThreadPosts($targetId, $threadId, $sort, $start, $limit)
     {
+        var_dump($targetId);
         $thread = $this->getThread($targetId, $threadId);
         if (empty($thread)) {
             return array();
