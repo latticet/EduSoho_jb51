@@ -14,7 +14,7 @@ class DefaultController extends BaseController
 
     public function indexAction ()
     {
-        if($_SERVER['HTTP_HOST']=='http://www.huiyouarts.com/'){
+        if($_SERVER['HTTP_HOST']=='www.huiyouarts.com'){
             die('Zack close the site.');
         }
         
