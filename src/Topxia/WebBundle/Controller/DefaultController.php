@@ -46,6 +46,7 @@ class DefaultController extends BaseController
         $categories = $this->getCategoryService()->findGroupRootCategories('course');
         
         $blocks = $this->getBlockService()->getContentsByCodes(array('home_top_banner'));
+        
         $user = $this->getCurrentUser();
         if(!empty($user['id'])){
             $this->getBatchNotificationService()->checkoutBatchNotification($user['id']);

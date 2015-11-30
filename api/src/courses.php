@@ -48,11 +48,12 @@ $api->get('/category/codes', function () {
 $api->get('/category/{code}', function (Request $request, $code) {
     $start = $request->query->get('start', 0);
     $limit = $request->query->get('limit', 10);
-    $sortField  = $request->query->get('sortField','id');
-    $sort = $request->query->get('sort','DESC');
+    $is_live = $request->query->get('is_live', 0);
+    $sortField = $request->query->get('sortField', 'id');
+    $sort = $request->query->get('sort', 'DESC');
     $orderBy = array();
-    $orderBy[]=$sortField;
-    $orderBy[]=$sort;
+    $orderBy[] = $sortField;
+    $orderBy[] = $sort;
     $conditions = array();
     if ($code == 'all') {
     } else {
@@ -63,9 +64,17 @@ $api->get('/category/{code}', function (Request $request, $code) {
         ));
         $conditions['categoryIds'] = $categoryIds;
     }
-   // $conditions['parentId'] = 0;
-    $conditions['status']='published';
-    $courses = ServiceKernel::instance()->createService('Course.CourseService')->searchCourses($conditions, $orderBy , $start, $limit);
+    // $conditions['parentId'] = 0;
+    $conditions['status'] = 'published';
+    if ($is_live == 1) {
+        $conditions['type'] = 'live';
+    } elseif ($is_live == 2) {
+        //什么都不做
+        
+    } else {
+        $conditions['type'] = 'normal';
+    }
+    $courses = ServiceKernel::instance()->createService('Course.CourseService')->searchCourses($conditions, $orderBy, $start, $limit);
     $count = ServiceKernel::instance()->createService('Course.CourseService')->searchCourseCount($conditions);
     $data = array();
     $data['course_list'] = $courses;
@@ -112,6 +121,38 @@ $api->post('/{courseId}/reviews/user/{userId}', function (Request $request, $cou
     $review = filter($review, 'course');
     
     return $review;
+});
+//13关键词搜索
+$api->get('/search/', function (Request $request) {
+    $start = $request->query->get('start', 0);
+    $limit = $request->query->get('limit', 10);
+    $courses = $paginator = null;
+    $keywords = $request->query->get('q');
+    $keywords = trim($keywords);
+    $conditions = array();
+    $conditions['status'] = 'published';
+    $conditions['title'] = $keywords;
+    $courseService = ServiceKernel::instance()->createService('Course.CourseService');
+    $count = $courseService->searchCourseCount($conditions);
+    $courses = $courseService->searchCourses($conditions, 'latest', $start, $limit);
+    $data = array();
+    $data['courses'] = $courses;
+    $data['count'] = $count;
+    
+    return $data;
+});
+//14获取首页轮播
+$api->get('/blocks/', function (Request $request) {
+    $settingService = ServiceKernel::instance()->createService('System.SettingService');
+    $name = 'theme';
+    $theme = $settingService->get($name);
+    $blockService = ServiceKernel::instance()->createService('Content.BlockService');
+    $code = "{$theme['uri']}:home_top_banner";
+    $blocks = $blockService->getContentsByCodes(array(
+        $code
+    ));
+    
+    return $blocks;
 });
 
 return $api;
