@@ -14,6 +14,10 @@ class DefaultController extends BaseController
 
     public function indexAction ()
     {
+        if($_SERVER['HTTP_HOST']=='http://www.huiyouarts.com/'){
+            die('Zack close the site.');
+        }
+        
        
         $conditions = array('status' => 'published', 'parentId' => 0, 'recommended' => 1);
         $courses = $this->getCourseService()->searchCourses($conditions, 'recommendedSeq', 0, 12);
