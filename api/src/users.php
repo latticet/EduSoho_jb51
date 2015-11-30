@@ -512,4 +512,16 @@ $api->post('/friendship', function (Request $request) {
         'success' => ($result1 && $result2) ? true : false
     );
 });
+//忘记密码 找回密码
+$api->post('/reset_password/{userId}', function (Request $request, $userId) {
+    $method = $request->request->get('method');
+    $new_password = $request->request->get('password');
+    $user_id = $userId;
+    $result = ServiceKernel::instance()->createService('User.UserService')->changePassword($user_id, $new_password);
+    
+    return array(
+        'success' => $result
+    );
+});
+
 return $api;
