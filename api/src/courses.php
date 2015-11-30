@@ -64,7 +64,7 @@ $api->get('/category/{code}', function (Request $request, $code) {
         $conditions['categoryIds'] = $categoryIds;
     }
    // $conditions['parentId'] = 0;
-    $conditions['status']=['published'];
+    $conditions['status']='published';
     $courses = ServiceKernel::instance()->createService('Course.CourseService')->searchCourses($conditions, $orderBy , $start, $limit);
     $count = ServiceKernel::instance()->createService('Course.CourseService')->searchCourseCount($conditions);
     $data = array();
