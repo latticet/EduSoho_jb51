@@ -224,12 +224,15 @@ class OrderServiceImpl extends BaseService implements OrderService
         if (empty($order)) {
             throw $this->createServiceException('订单不存在，取消订单失败！');
         }
+        
 
         if (!in_array($order['status'], array('created',))) {
             throw $this->createServiceException('当前订单状态不能取消订单！');
         }
 
         $payment = $this->getSettingService()->get("payment");
+        
+
         if(isset($payment["enable"]) && $payment["enable"]==1
          && isset($payment[$order["payment"]."_enable"]) && $payment[$order["payment"]."_enable"] == 1 
          && isset($payment["close_trade_enabled"]) && $payment["close_trade_enabled"] == 1){

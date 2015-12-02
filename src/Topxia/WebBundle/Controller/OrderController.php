@@ -86,10 +86,7 @@ class OrderController extends BaseController
     }
 
     public function createAction(Request $request)
-    {
-        var_dump($_GET);
-        var_dump($_POST);
-        
+    {        
         $fields = $request->request->all(); 
         if (isset($fields['coinPayAmount']) && $fields['coinPayAmount']>0){
             $scenario = "sms_user_pay";
@@ -166,9 +163,7 @@ class OrderController extends BaseController
                 'coupon' => empty($coupon) ? '' : $coupon,
                 'couponDiscount' => empty($couponDiscount) ? 0 : $couponDiscount
             );
-            var_dump($orderFileds);
-            var_dump($fields);
-            die();
+            
             
             $order = $processor->createOrder($orderFileds, $fields);
             

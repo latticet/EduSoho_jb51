@@ -138,6 +138,10 @@ class ArticleServiceImpl extends BaseService implements ArticleService
     {
         return $this->getArticleLikeDao()->getArticleLikeByArticleIdAndUserId($articleId, $userId);
     }
+    public function findArticleLikesByUserId($userId)
+    {
+        return $this->getArticleLikeDao()->findArticleLikesByUserId($userId);
+    }
 
     public function like($articleId)
     {
@@ -166,6 +170,26 @@ class ArticleServiceImpl extends BaseService implements ArticleService
 
         return $this->getArticleLikeDao()->addArticleLike($articleLike);
     }
+    public function likeArticleByUserId($articleId,$userId){
+        $article = $this->getArticle($articleId);
+        if (empty($article)) {
+            throw $this->createNotFoundException("资讯不存在，或已删除。");
+        }
+
+        $like = $this->getArticleLike($articleId, $userId);
+        if (!empty($like)) {
+            throw $this->createAccessDeniedException('不可重复对一条资讯点赞！');
+        }
+
+        $articleLike = array();
+        $articleLike['articleId']=$articleId;
+        $articleLike['userId']=$userId;
+        $articleLike['createdTime']=time();
+        $this->getDispatcher()->dispatch('article.liked', new ServiceEvent($article));
+
+        return $this->getArticleLikeDao()->addArticleLike($articleLike);
+
+    }
 
     public function cancelLike($articleId)
     {
@@ -182,6 +206,17 @@ class ArticleServiceImpl extends BaseService implements ArticleService
         $this->getArticleLikeDao()->deleteArticleLikeByArticleIdAndUserId($articleId, $user['id']);
 
         $this->getDispatcher()->dispatch('article.cancelLike', new ServiceEvent($article));
+    }
+    public function cancelLikeArticleByUserId($articleId,$userId){
+        $article = $this->getArticle($articleId);
+        if (empty($article)) {
+            throw $this->createNotFoundException("资讯不存在，或已删除。");
+        }
+
+        $this->getArticleLikeDao()->deleteArticleLikeByArticleIdAndUserId($articleId, $userId);
+
+        $this->getDispatcher()->dispatch('article.cancelLike', new ServiceEvent($article));
+        return true;
     }
 
     public function count($articleId, $field, $diff)

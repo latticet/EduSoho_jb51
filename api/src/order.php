@@ -73,5 +73,27 @@ $api->get('/list', function (Request $request) {
     
     return $data;
 });
+//取消一条订单信息
+$api->get('/cancel/{orderId}', function ($orderId) {    
+    $OrderService = ServiceKernel::instance()->createService('Order.OrderService');
 
+    $order = $OrderService->cancelOrder($orderId);
+
+    return filter($order, 'order');
+});
+//订单不允许删除
+// $api->get('/detail', function ($id) {
+//     $order = convert($id,'order');
+//     return filter($order, 'order');
+// });
+//退款一条订单信息
+// $api->get('/detail', function ($id) {
+//     $order = convert($id,'order');
+//     return filter($order, 'order');
+// });
+//支付一条订单信息
+// $api->get('/detail', function ($id) {
+//     $order = convert($id,'order');
+//     return filter($order, 'order');
+// });
 return $api;
