@@ -9,6 +9,7 @@ function _u($uri)
  * @todo  待重构成新的路由配置方式
  */
 $app->mount(_u('/zc888'), include dirname(__DIR__) . '/src/zc888.php' );
+$app->mount(_u('/sundry'), include dirname(__DIR__) . '/src/sundry.php' );
 $app->mount(_u('/activity'), include dirname(__DIR__) . '/src/activity.php' );
 $app->mount(_u('/homework'), include dirname(__DIR__) . '/src/homework.php' );
 $app->mount(_u('/order'), include dirname(__DIR__) . '/src/order.php' );
