@@ -11,7 +11,7 @@ define(function(require, exports, module) {
         uploader.on('uploadSuccess', function(file, response ) {
             var url = $("#upload-picture-btn").data("gotoUrl");
             Notify.success('上传成功！', 1);
-            document.location.href = url;
+           document.location.href = url;
         });
 
         $('.use-partner-avatar').on('click', function(){

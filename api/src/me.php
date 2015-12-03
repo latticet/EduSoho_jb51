@@ -2,6 +2,8 @@
 use Topxia\Service\Common\ServiceKernel;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
+use Topxia\Common\FileToolkit;
+use Symfony\Component\HttpFoundation\File\File;
 $api = $app['controllers_factory'];
 //获取当前用户信息
 /*
@@ -18,6 +20,16 @@ $api->get('/', function (Request $request) {
     $user = is_array($user) ? $user : $user->toArray();
     
     return filter($user, 'me');
+});
+//修改当前用户信息
+$api->post('/profile/post', function (Request $request) {
+    $user = getCurrentUser();
+    $UserService = ServiceKernel::instance()->createService('User.UserService');
+    $userId = $request->request->get('userId', $user['id']);
+    $profile = $request->request->all();
+    $profile = $UserService->updateUserProfile($userId, $profile);
+    
+    return $profile;
 });
 //获取当前用户课程
 /*
@@ -296,11 +308,81 @@ $api->post('/change_password', function (Request $request) {
     if ($status) {
         $result = ServiceKernel::instance()->createService('User.UserService')->changePassword($user_id, $new_password);
     } else {
+        $result = false;
     }
     
     return array(
         'success' => $result
     );
+});
+//上传头像
+$api->post('/avatar/post', function (Request $request) {
+    $user = getCurrentUser();
+    $userId = $user['id'];
+    //上传
+    $groupCode = 'user';
+    $file = $request->files->get('file');
+    if (!FileToolkit::isImageFile($file)) {
+        throw new \RuntimeException("您上传的不是图片文件，请重新上传。");
+    }
+    $FileService = ServiceKernel::instance()->createService('Content.FileService');
+    $record = $FileService->uploadFile($groupCode, $file);
+    $parsed = $FileService->parseFileUri($record['uri']);
+    $imgInfo = getimagesize($parsed['fullpath']);
+    //切图
+    $options = array();
+    $options['x'] = $request->request->get('x',0);
+    $options['y'] = $request->request->get('x',71);
+    $options['x2'] = $request->request->get('x',180);
+    $options['y2'] = $request->request->get('x',251);
+    $options['w'] = $request->request->get('x',180);
+    $options['h'] = $request->request->get('x',180);
+    $options['width'] = $imgInfo[0];
+    $options['height'] = $imgInfo[1];
+    $imgs = array();
+    $large = array(
+        200,
+        200
+    );
+    $imgs['large'] = $large;
+    $medium = array(
+        120,
+        120
+    );
+    $imgs['medium'] = $medium;
+    $small = array(
+        48,
+        48
+    );
+    $imgs['small'] = $small;
+    $options['imgs'] = $imgs;
+    $options['group'] = $groupCode;
+    if (empty($options['group'])) {
+        $options['group'] = "default";
+    }
+    $filePaths = FileToolKit::cropImages($parsed["fullpath"], $options);
+    $fields = array();
+    
+    foreach ($filePaths as $key => $value) {
+        $file = $FileService->uploadFile($options["group"], new File($value));
+        $fields[] = array(
+            "type" => $key,
+            "id" => $file['id']
+        );
+    }
+    if (isset($options["deleteOriginFile"]) && $options["deleteOriginFile"] == 0) {
+        $fields[] = array(
+            "type" => "origin",
+            "id" => $record['id']
+        );
+    } else {
+        $FileService->deleteFileByUri($record["uri"]);
+    }
+    //保存图片地址到个人信息
+    $UserService = ServiceKernel::instance()->createService('User.UserService');
+    $user = $UserService->changeAvatar($userId, $fields);
+    
+    return $user;
 });
 
 return $api;

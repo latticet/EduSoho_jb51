@@ -41,6 +41,7 @@ class FileController extends BaseController
     {
 
         $options = $request->request->all();
+
         if(empty($options['group'])){
             $options['group'] = "default";
         }
@@ -58,8 +59,9 @@ class FileController extends BaseController
         if(empty($record)) {
             return $this->createMessageResponse("error", "文件不存在");
         }
+       
         $parsed = $this->getFileService()->parseFileUri($record['uri']);
-
+    
         $filePaths = FileToolKit::cropImages($parsed["fullpath"], $options);
 
         $fields = array();

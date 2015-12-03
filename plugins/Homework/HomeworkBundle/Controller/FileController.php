@@ -70,9 +70,36 @@ class FileController extends \Topxia\WebBundle\Controller\BaseController {
       
         return $this->redirect($_SERVER['HTTP_REFERER']);
     }
+       public function uploadAvatarAction(Request $request)
+    {
+        list($groupCode, $type) = $this->tryUploadFile($request);
+
+        if(!$this->isGroup($groupCode)) {
+            
+            return $this->createMessageResponse("error", "参数不正确");
+        }
+        
+        $file = $request->files->get('file');
+
+        if ($type == 'image') {
+            if (!FileToolkit::isImageFile($file)) {
+                throw new \RuntimeException("您上传的不是图片文件，请重新上传。");
+            }
+        } else {
+            throw new \RuntimeException("上传类型不正确！");
+        }
+
+        $record = $this->getFileService()->uploadFile($groupCode, $file);
+        $record['url'] = $this->get('topxia.twig.web_extension')->getFilePath($record['uri']);
+
+        $request->getSession()->set("fileId", $record["id"]);
+        return $this->createJsonResponse($record);
+    }
 
     public function cropImgAction(Request $request) {
         $options = $request->request->all();
+        var_dump($options);
+        die();
         if (empty($options['group'])) {
             $options['group'] = "default";
         }
