@@ -65,7 +65,9 @@ $app->before(function (Request $request) use ($app) {
             break;
         }
     }
-    $token = $request->headers->get('Auth-Token', '');
+    //$token = $request->headers->get('Auth-Token', '');
+    $token = $request->query->get('token', '');
+    
 
     if (!$inWhiteList && empty($token)) {
         throw createNotFoundException("AuthToken is not exist.");
