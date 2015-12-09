@@ -58,6 +58,7 @@ class LogServiceImpl extends BaseService implements  LogService
 
 	protected function addLog($level, $module, $action, $message, array $data = null)
 	{
+		
 		return $this->getLogDao()->addLog(array(
 			'module' => $module,
 			'action' => $action,

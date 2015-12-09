@@ -223,6 +223,7 @@ class UserServiceImpl extends BaseService implements UserService
     public function changePassword($id, $password)
     {
         $user = $this->getUser($id);
+
         if (empty($user) || empty($password)) {
             throw $this->createServiceException('参数不正确，更改密码失败。');
         }

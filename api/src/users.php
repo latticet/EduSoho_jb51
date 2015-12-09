@@ -580,11 +580,31 @@ $api->post('/friendship', function (Request $request) {
     );
 });
 //忘记密码 找回密码
-$api->post('/reset_password/{userId}', function (Request $request, $userId) {
-    $method = $request->request->get('method');
+$api->post('/reset_password/{mobileNumber}', function (Request $request, $mobileNumber) {
+    $fields = $request->request->all();
+    $mobile_number = $mobileNumber;
+    $error= array();
+    $session = new Session();
+    $session->start();
+    if ($session->has($mobile_number)) {
+        $info = $session->get($mobile_number);
+        if ($fields['code'] != $info['code']) {
+            $error['message'] = '验证码不正确';
+            
+            return $error;
+        }
+    }
+        $UserService = ServiceKernel::instance()->createService('User.UserService');
+       
+    $user = $UserService->getUserByNickname($mobileNumber);
+   
+    if(empty($user)){
+
+        return array('message'=>'手机未注册');
+    }
     $new_password = $request->request->get('password');
-    $user_id = $userId;
-    $result = ServiceKernel::instance()->createService('User.UserService')->changePassword($user_id, $new_password);
+    $user_id = $user['id'];
+    $result = $UserService->changePassword($user_id, $new_password);
     
     return array(
         'success' => $result

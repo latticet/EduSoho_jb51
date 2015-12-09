@@ -84,6 +84,9 @@ $app->before(function (Request $request) use ($app) {
     }
 
     $user = $userService->getUser($token['userId']);
+    if(empty($user)){
+       $user['id']=0; 
+    }
     $user['currentIp']=$request->getClientIp();
     // $user = $userService->getUser(1);
     if (!$inWhiteList && empty($user)) {
